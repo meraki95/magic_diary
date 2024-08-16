@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-import 'moment/locale/ko'; // 한국어 로케일 가져오기
+import 'moment/locale/ko'; // 한국어 로케s일 가져오기
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../styles/DiaryList.css';
 
