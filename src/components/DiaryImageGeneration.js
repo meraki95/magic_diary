@@ -7,7 +7,7 @@ function DiaryImageGeneration() {
   const { selectedDiary } = location.state || {}; // 전달된 일기 데이터 또는 빈 객체
 
   const [generatedImage, setGeneratedImage] = useState('https://via.placeholder.com/600x400'); // 임시 이미지 URL 사용
-  const [loading, setLoading] = useState(false); // 로딩 상태 비활성화
+  const [loading] = useState(false); // 로딩 상태 비활성화
 
   const handleSave = () => {
     console.log('이미지와 일기 저장');

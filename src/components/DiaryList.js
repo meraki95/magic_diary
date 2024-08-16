@@ -10,7 +10,7 @@ moment.locale('ko');
 const localizer = momentLocalizer(moment);
 
 function DiaryList() {
-  const [events, setEvents] = useState([
+  const [events] = useState([
     {
       title: '사용자 업로드 사진',
       start: new Date(2024, 7, 1),
