@@ -4,7 +4,7 @@ import '../styles/Community.css';
 
 function Community() {
   // 예시 데이터
-  const [posts, setPosts] = useState([
+  const [posts] = useState([
     {
       id: 1,
       username: 'User1',
