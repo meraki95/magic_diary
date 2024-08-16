@@ -1,0 +1,53 @@
+.diary-list-container {
+  padding: 20px;
+  background-color: #2E2E3A;
+  border-radius: 10px;
+  color: #E5E5E5;
+  min-height: 100vh;
+  margin-left: 260px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+
+
+.rbc-event {
+  border-radius: 5px;
+  background-size: cover !important;
+  background-position: center;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  padding: 5px;
+}
+
+.rbc-calendar {
+  background-color: #1A1A2E;
+  color: #E5E5E5;
+  border-radius: 10px;
+}
+
+.rbc-toolbar {
+  background-color: #2E2E3A;
+  color: #FFD700;
+}
+
+.rbc-today {
+  background-color: #4B48E0;
+  color: #FFD700;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .diary-list-container {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .rbc-calendar {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,74 @@
+.posts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 카드들을 가운데 정렬 */
+    gap: 20px;
+  }
+  
+  .post-card {
+    width: 35%; /* 가로 크기를 2.5배 늘림 */
+    background-color: #1A1A2E;
+    border-radius: 10px;
+    padding: 20px;
+    color: #E5E5E5;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .post-image {
+    width: 100%; /* 카드 너비에 맞게 이미지 크기 조정 */
+    height: auto;
+    max-height: 300px; /* 세로 크기를 1.5배로 늘림 */
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .post-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .post-content {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .post-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .action-button {
+    background: none;
+    border: none;
+    color: #FFD700;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+  }
+  
+  .action-button:hover {
+    color: #F0A500;
+  }
+  
+  /* 반응형 디자인 */
+  @media (max-width: 768px) {
+    .post-card {
+      width: 90%; /* 작은 화면에서는 카드가 화면을 더 많이 차지 */
+    }
+  
+    .post-header {
+      font-size: 16px;
+    }
+  
+    .post-content {
+      font-size: 14px;
+    }
+  
+    .action-button {
+      font-size: 14px;
+    }
+  }
+  

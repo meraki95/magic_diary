@@ -1,0 +1,105 @@
+.character-setup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 20px;
+  background-color: #2E2E3A;
+  border-radius: 10px;
+  color: #E5E5E5;
+  min-height: 100vh;
+  padding-top: 80px;
+  margin-left: 250px;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 사진을 가로로 4개 배치 */
+  gap: 20px;
+  width: 100%;
+  max-width: 1500px;
+  margin-top: 20px;
+}
+
+.character-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #1A1A2E;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.character-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+
+.character-placeholder {
+  width: 150px;
+  height: 150px;
+  background-color: #3A3A4F;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #E5E5E5;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  margin-left: -20px; /* 원하는 위치로 이동 */
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  position: relative; /* 위치 설정 가능하게 함 */
+  left: 30px; /* 전체 컨테이너를 오른쪽으로 이동 */
+}
+
+input[type="file"] {
+  cursor: pointer;
+  margin-top: 10px;
+  position: relative;
+  left: 20px; /* 파일 선택 버튼 자체를 오른쪽으로 이동 */
+}
+
+.file-upload-container span {
+  position: relative;
+  left: 20px; /* "선택된 파일 없음" 텍스트를 더 오른쪽으로 이동 */
+  margin-top: 5px;
+}
+
+
+.character-item p {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.upload-input {
+  margin-top: 10px;
+}
+
+.upload-input[type="file"] {
+  display: block;
+  margin: 0 auto;
+  cursor: pointer;
+  color: #E5E5E5;
+}
+
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .character-setup-container {
+    margin-left: 200px;
+  }
+
+  .character-grid {
+    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 가로 2개 배치 */
+  }
+}

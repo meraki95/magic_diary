@@ -1,0 +1,118 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* 요소들을 위에서 조금 떨어진 위치에 배치 */
+  text-align: center;
+  padding: 40px 20px; /* 상단에서 더 떨어지도록 padding 조정 */
+  background-color: #2E2E3A;
+  border-radius: 10px;
+  color: #E5E5E5;
+  min-height: 100vh;
+}
+
+.profile-image-container {
+  margin-bottom: 30px; /* 더 여유 있는 공간 */
+  text-align: center;
+}
+
+.profile-image {
+  width: 225px; /* 기존 크기의 1.5배 */
+  height: 225px;
+  object-fit: cover;
+  border-radius: 15px; /* 모서리 반경도 1.5배 */
+  margin-bottom: 15px;
+}
+
+.profile-placeholder {
+  width: 225px;
+  height: 225px;
+  background-color: #3A3A4F;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #E5E5E5;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  margin-left:100px;
+}
+
+input[type="file"] {
+  cursor: pointer;
+  margin-top: 15px; /* 간격을 더 넓게 */
+  font-size: 14px; /* 폰트 크기를 1.5배 증가 */
+  margin-left : 100px;;
+}
+
+.file-upload-container span {
+  margin-left: 15px;
+  font-size: 1.5em;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 600px; /* 더 넓게 조정 */
+  margin-bottom: 30px;
+  font-size: 15px; /* 텍스트 크기 증가 */
+  margin-left: 60px;
+}
+
+.profile-details p {
+  margin: 10px 0;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 10px;
+  margin-left: 80px;
+}
+
+.password-change-btn,
+.logout-btn {
+  background-color: #6C63FF;
+  color: #FFFFFF;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 7.5px;
+  cursor: pointer;
+  font-size: 15px;
+  
+}
+
+.password-change-btn:hover,
+.logout-btn:hover {
+  background-color: #4B48E0;
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 20px;
+  }
+
+  .profile-image {
+    width: 180px;
+    height: 180px;
+  }
+
+  .profile-placeholder {
+    width: 180px;
+    height: 180px;
+  }
+
+  .profile-details {
+    width: 100%;
+    max-width: none;
+    font-size: 1.2em;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

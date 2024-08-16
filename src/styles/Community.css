@@ -1,0 +1,26 @@
+.community-container {
+  padding: 20px;
+  background-color: #2E2E3A;
+  border-radius: 10px;
+  color: #E5E5E5;
+  min-height: 100vh;
+  margin-left: 260px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .community-container {
+    margin-left: 20px;
+  }
+}
