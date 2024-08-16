@@ -41,7 +41,7 @@ function DiarySelection({ gptOptions = [], handleSelection, handleRefresh }) {
             </div>
           ))
         ) : (
-          <p>일기를 불러오는 중...</p>
+          <p>일기를 불러오는 중....</p>
         )}
       </div>
       <div className="diary-actions">
