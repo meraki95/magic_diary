@@ -6,7 +6,7 @@ import { FaPencilAlt, FaImages, FaCalendarAlt, FaLightbulb } from 'react-icons/f
 function Home() {
   const navigate = useNavigate();
 
-  const userName = "사용자 이름";
+  // const userName = "사용자 이름";
   const today = new Date().toLocaleDateString();
   const recommendedDiaryTopic = "오늘 하루를 색으로 표현한다면?";
   const recentDiary = "오늘은 너무 바빴던 하루였다...";

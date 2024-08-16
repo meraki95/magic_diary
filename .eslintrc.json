@@ -1,0 +1,6 @@
+{
+    "extends": ["react-app", "eslint:recommended"],
+    "rules": {
+      "no-unused-vars": "warn"  // 사용하지 않는 변수에 대해 경고를 표시합니다.
+    }
+  }

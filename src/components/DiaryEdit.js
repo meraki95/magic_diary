@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 function DiaryEdit() {
-  const { id } = useParams();
+  // const { id } = useParams();
   const [diaryText, setDiaryText] = useState("Generated diary content here...");
 
   const handleSave = () => {
