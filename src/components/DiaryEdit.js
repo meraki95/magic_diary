@@ -11,7 +11,7 @@ function DiaryEdit() {
   };
 
   const handleImageRefresh = () => {
-    // 이미지 새로고침 기능 구현 (추후 구현)
+    // 이미지 새로고침 기능 구현 (추후 d 구현)
     console.log('Image refreshed');
   };
 
