@@ -13,6 +13,8 @@ import NavBar from './components/NavBar';
 import Community from './components/Community';
 import DiarySelection from './components/DiarySelection';
 import DiaryImageGeneration from './components/DiaryImageGeneration';
+import Login from './components/Login';
+import Signup from './components/Signup';
 
 import './App.css';
 
@@ -49,6 +51,8 @@ function AppContent() {
       <div className="content">
         <Routes>
           <Route path="/" element={<StartPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home toggleSidebar={toggleSidebar} />} />
           <Route path="/write" element={<DiaryForm />} />
           <Route path="/characters" element={<CharacterSetup />} />
