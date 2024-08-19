@@ -3,16 +3,13 @@ import { NavLink } from 'react-router-dom';
 import '../styles/NavBar.css';
 
 function NavBar({ sidebarVisible, toggleSidebar }) {
-  const buttonStyle = {
-    left: sidebarVisible ? '260px' : '20px',
-  };
   return (
     <>
-        <div className={`navbar ${sidebarVisible ? 'visible' : ''}`}>
+      <div className={`navbar ${sidebarVisible ? 'visible' : ''}`} onClick={(e) => e.stopPropagation()}>
         <nav>
           <ul>
             <li>
-            <NavLink to="/home" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              <NavLink to="/home" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 홈
               </NavLink>
             </li>
@@ -49,7 +46,7 @@ function NavBar({ sidebarVisible, toggleSidebar }) {
           </ul>
         </nav>
       </div>
-      <button className="toggle-sidebar-btn" style={buttonStyle} onClick={toggleSidebar}>
+      <button className="toggle-sidebar-btn" onClick={() => toggleSidebar()} style={{zIndex: 1000}}>
         {sidebarVisible ? '사이드바 숨기기' : '사이드바 보기'}
       </button>
     </>

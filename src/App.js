@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Home from './components/Home';
 import StartPage from './components/StartPage';
@@ -28,16 +28,28 @@ function AppContent() {
     }
   }, []);
 
+  useEffect(() => {
+    setSidebarVisible(false);
+  }, [location]);
+
+  const handleBackgroundClick = useCallback((e) => {
+    if (e.target === e.currentTarget) {
+      setSidebarVisible(false);
+    }
+  }, []);
+
   const isStartPage = location.pathname === '/';
 
   return (
-    <div className={`App ${sidebarVisible ? '' : 'sidebar-hidden'}`}>
+    <div 
+      className={`App ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} 
+      onClick={handleBackgroundClick}
+    >
       {!isStartPage && <NavBar sidebarVisible={sidebarVisible} toggleSidebar={toggleSidebar} />}
-      <div className={`content ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
+      <div className="content">
         <Routes>
           <Route path="/" element={<StartPage />} />
           <Route path="/home" element={<Home toggleSidebar={toggleSidebar} />} />
-          <Route path="/home" element={<Home />} />
           <Route path="/write" element={<DiaryForm />} />
           <Route path="/characters" element={<CharacterSetup />} />
           <Route path="/profile" element={<Profile />} />
