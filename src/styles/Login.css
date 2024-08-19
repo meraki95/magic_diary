@@ -67,3 +67,12 @@
   a:hover {
     text-decoration: underline;
   }
+  .kakao-login {
+    margin-top: 15px;
+    background-color: #FEE500;
+    color: #000000;
+  }
+  
+  .kakao-login:hover {
+    background-color: #E6D000;
+  }

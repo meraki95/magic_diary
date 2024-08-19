@@ -34,7 +34,7 @@ function Home({ toggleSidebar }) {
         </div>
         <div className="card" onClick={() => navigate('/characters')}>
           <FaImages className="card-icon" />
-          <h3>사진함 보기</h3>
+          <h3>일기주인공 설정</h3>
         </div>
       </div>
 
