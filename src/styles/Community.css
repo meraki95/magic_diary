@@ -1,26 +1,53 @@
 .community-container {
-  padding: 20px;
-  background-color: #2E2E3A;
-  border-radius: 10px;
-  color: #E5E5E5;
+  background-color:#2E2E3A;
   min-height: 100vh;
-  margin-left: 260px;
+  padding: 60px 0 0 250px;
+  transition: padding-left 0.3s ease;
 }
 
-h2 {
+.community-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dbdbdb;
+  padding: 15px 0;
+  position: fixed;
+  top: 0;
+  left: 250px;
+  right: 0;
+  z-index: 1000;
+  transition: left 0.3s ease;
+}
+
+.community-header h2 {
   font-size: 24px;
-  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: #262626;
 }
 
 .posts-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-/* 반응형 디자인 */
+.sidebar-hidden .community-container {
+  padding-left: 0;
+}
+
+.sidebar-hidden .community-header {
+  left: 0;
+}
+
 @media (max-width: 768px) {
   .community-container {
-    margin-left: 20px;
+    padding: 80px 10px 0 10px;
+  }
+  
+  .community-header {
+    left: 0;
+  }
+  
+  .posts-container {
+    padding: 10px;
   }
 }

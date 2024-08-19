@@ -57,7 +57,7 @@ function AppContent() {
           <Route path="/share" element={<ShareDiary />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/ai-counseling" element={<AICounseling />} />
-          <Route path="/community" element={<Community />} />
+          <Route path="/community" element={<Community sidebarVisible={sidebarVisible} />} />
           <Route path="/select-diary" element={<DiarySelection />} />
           <Route path="/generate-image" element={<DiaryImageGeneration />} />
         </Routes>

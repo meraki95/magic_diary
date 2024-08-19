@@ -1,18 +1,8 @@
 .App {
   display: flex;
   height: 100vh;
-  transition: all 0.3s ease;
   min-height: 100vh;
-}
-
-.sidebar-visible .content {
-  margin-left: 250px; /* 사이드바가 있을 때 메인 콘텐츠에 여백 추가 */
-  transition: margin-left 0.3s ease;
-}
-
-.sidebar-hidden .content {
-  margin-left: 0;
-  transition: margin-left 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .content {
@@ -20,12 +10,32 @@
   padding: 20px;
   background-color: #2E2E3A;
   overflow-y: auto;
-  min-width: 300px; /* 최소 너비 설정 */
+  min-width: 300px;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-visible .content {
+  margin-left: 250px;
+}
+
+.sidebar-hidden .content {
+  margin-left: 0;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-  .sidebar-visible .content {
-    margin-left: 200px;
+  .App {
+    flex-direction: column;
+  }
+
+  .content {
+    width: 100%;
+    min-width: auto;
+    padding: 10px;
+  }
+
+  .sidebar-visible .content,
+  .sidebar-hidden .content {
+    margin-left: 0;
   }
 }

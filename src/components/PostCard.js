@@ -5,15 +5,20 @@ function PostCard({ post }) {
   return (
     <div className="post-card">
       <div className="post-header">
-        <h3>{post.username}</h3>
+        <img src={post.userImage} alt={post.username} className="user-avatar" />
+        <span className="username">{post.username}</span>
       </div>
-      {post.image && <img src={post.image} alt="Post" className="post-image" />}
-      <p className="post-content">{post.content}</p>
+      <img src={post.image} alt="Post" className="post-image" />
       <div className="post-actions">
-        <button className="action-button">❤️ {post.likes}</button>
-        <button className="action-button">💬 {post.comments}</button>
-        <button className="action-button">🔗 공유</button>
+        <button className="action-button">❤️</button>
+        <button className="action-button">💬</button>
+        <button className="action-button">🚀</button>
       </div>
+      <div className="post-likes">{post.likes} likes</div>
+      <div className="post-content">
+        <span className="username">{post.username}</span> {post.content}
+      </div>
+      <div className="post-comments">View all {post.comments} comments</div>
     </div>
   );
 }

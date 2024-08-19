@@ -5,6 +5,7 @@ function Profile() {
   return (
     <div className="profile-container">
       <div className="profile-image-container">
+        <h2>프로필</h2>
         <div className="profile-placeholder">프로필 사진이 없습니다.</div>
         <input type="file" />
       </div>
