@@ -3,51 +3,46 @@ import { NavLink } from 'react-router-dom';
 import '../styles/NavBar.css';
 
 function NavBar({ sidebarVisible, toggleSidebar }) {
-  const sidebarStyle = {
-    transform: sidebarVisible ? 'translateX(0)' : 'translateX(-250px)',
-  };
-
   const buttonStyle = {
     left: sidebarVisible ? '260px' : '20px',
   };
-
   return (
     <>
-      <div className="navbar" style={sidebarStyle}>
+        <div className={`navbar ${sidebarVisible ? 'visible' : ''}`}>
         <nav>
           <ul>
             <li>
-              <NavLink to="/home" className="nav-link" activeClassName="active">
+            <NavLink to="/home" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 홈
               </NavLink>
             </li>
             <li>
-              <NavLink to="/write" className="nav-link" activeClassName="active">
+              <NavLink to="/write" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 새 일기 작성하기
               </NavLink>
             </li>
             <li>
-              <NavLink to="/characters" className="nav-link" activeClassName="active">
+              <NavLink to="/characters" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 일기 주인공 설정
               </NavLink>
             </li>
             <li>
-              <NavLink to="/community" className="nav-link" activeClassName="active">
+              <NavLink to="/community" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 커뮤니티
               </NavLink>
             </li>
             <li>
-              <NavLink to="/ai-counseling" className="nav-link" activeClassName="active">
+              <NavLink to="/ai-counseling" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 AI 상담
               </NavLink>
             </li>
             <li>
-              <NavLink to="/diaries" className="nav-link" activeClassName="active">
+              <NavLink to="/diaries" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 과거 일기 보기
               </NavLink>
             </li>
             <li>
-              <NavLink to="/profile" className="nav-link" activeClassName="active">
+              <NavLink to="/profile" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
                 프로필
               </NavLink>
             </li>

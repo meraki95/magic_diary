@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
 import { FaPencilAlt, FaImages, FaCalendarAlt, FaLightbulb } from 'react-icons/fa';
 
-function Home() {
+function Home({ toggleSidebar }) {
   const navigate = useNavigate();
 
-  // const userName = "사용자 이름";
+  useEffect(() => {
+    if (toggleSidebar) {
+      toggleSidebar(false);
+    }
+  }, [toggleSidebar]);
+
   const today = new Date().toLocaleDateString();
   const recommendedDiaryTopic = "오늘 하루를 색으로 표현한다면?";
   const recentDiary = "오늘은 너무 바빴던 하루였다...";

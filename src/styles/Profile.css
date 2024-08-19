@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* 요소들을 위에서 조금 떨어진 위치에 배치 */
+  justify-content: flex-start;
   text-align: center;
-  padding: 40px 20px; /* 상단에서 더 떨어지도록 padding 조정 */
+  padding: 40px 20px;
   background-color: #2E2E3A;
   border-radius: 10px;
   color: #E5E5E5;
@@ -12,15 +12,15 @@
 }
 
 .profile-image-container {
-  margin-bottom: 30px; /* 더 여유 있는 공간 */
+  margin-bottom: 30px;
   text-align: center;
 }
 
 .profile-image {
-  width: 225px; /* 기존 크기의 1.5배 */
+  width: 225px;
   height: 225px;
   object-fit: cover;
-  border-radius: 15px; /* 모서리 반경도 1.5배 */
+  border-radius: 15px;
   margin-bottom: 15px;
 }
 
@@ -34,14 +34,14 @@
   color: #E5E5E5;
   border-radius: 15px;
   margin-bottom: 15px;
-  margin-left:100px;
+  margin-left:180px;
 }
 
 input[type="file"] {
   cursor: pointer;
-  margin-top: 15px; /* 간격을 더 넓게 */
-  font-size: 14px; /* 폰트 크기를 1.5배 증가 */
-  margin-left : 100px;;
+  margin-top: 15px;
+  font-size: 14px;
+  margin-left : 140px;
 }
 
 .file-upload-container span {
@@ -55,9 +55,9 @@ input[type="file"] {
   align-items: center;
   text-align: center;
   width: 100%;
-  max-width: 600px; /* 더 넓게 조정 */
+  max-width: 600px;
   margin-bottom: 30px;
-  font-size: 15px; /* 텍스트 크기 증가 */
+  font-size: 15px;
   margin-left: 60px;
 }
 
@@ -82,7 +82,6 @@ input[type="file"] {
   border-radius: 7.5px;
   cursor: pointer;
   font-size: 15px;
-  
 }
 
 .password-change-btn:hover,
@@ -114,5 +113,9 @@ input[type="file"] {
   .profile-actions {
     flex-direction: column;
     gap: 15px;
+  }
+
+  .profile-container {
+    padding: 10px;
   }
 }
