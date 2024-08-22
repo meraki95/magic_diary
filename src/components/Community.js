@@ -6,7 +6,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, S
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { getFirestore, collection, doc, getDoc, query, where, getDocs, addDoc, orderBy, limit } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDoc, query, where, getDocs, addDoc, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 function Community({ sidebarVisible }) {
@@ -154,7 +154,7 @@ function Community({ sidebarVisible }) {
         likes: [],
         comments: [],
         entryDate: newPost.entryDate,
-        createdAt: new Date(),
+        createdAt: Timestamp.now(), // Firestore의 Timestamp를 명확히 사용
         visibility: newPost.visibility,
       };
 
