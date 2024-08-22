@@ -90,7 +90,6 @@ function Community({ sidebarVisible }) {
       setIsLoading(false);
     } catch (error) {
       console.error('게시물 로드 중 오류 발생:', error);
-      alert(`게시물 저장에 실패했습니다: ${error.message}`);
       setError('게시물을 불러오는 데 실패했습니다.');
       setIsLoading(false);
     }
@@ -166,7 +165,7 @@ function Community({ sidebarVisible }) {
       loadPosts();
     } catch (error) {
       console.error('게시물 저장 중 오류 발생:', error);
-      alert('게시물 저장에 실패했습니다.');
+      alert(`게시물 저장에 실패했습니다: ${error.message}`);
     }
   };
 
