@@ -25,7 +25,7 @@ admin.initializeApp({
 });
 
 const app = express();
-const allowedOrigins = ['https://master--magicdiaryjsh.netlify.app', 'http://localhost:3000'];
+const allowedOrigins = ['https://magicdiaryjsh.netlify.app', 'http://localhost:3000'];
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);
