@@ -41,7 +41,7 @@ function AICounseling() {
           return;
         }
 
-        const response = await axios.post('${process.env.REACT_APP_API_URL}/api/ai-counseling', {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/ai-counseling`, {
           userId: user.uid,
         });
 

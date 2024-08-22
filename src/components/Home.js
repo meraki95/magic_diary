@@ -134,7 +134,7 @@ function Home({ toggleSidebar }) {
 
   const fetchAiAdvice = async (userId) => {
     try {
-      const response = await axios.post('${process.env.REACT_APP_API_URL}/api/ai-counseling', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/ai-counseling`, {
         userId: userId,
       });
       setAiAdvice(response.data.advice);
