@@ -17,6 +17,7 @@
 .sidebar-visible .character-setup-container {
   margin-left: 250px; /* 사이드바가 보일 때만 마진 적용 */
 }
+
 .character-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 사진을 가로로 4개 배치 */
@@ -42,7 +43,6 @@
   border-radius: 10px;
   margin-bottom: 10px;
 }
-
 
 .character-placeholder {
   width: 150px;
@@ -79,7 +79,6 @@ input[type="file"] {
   margin-top: 5px;
 }
 
-
 .character-item p {
   font-size: 18px;
   margin: 10px 0;
@@ -96,17 +95,72 @@ input[type="file"] {
   color: #E5E5E5;
 }
 
-
 /* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .character-grid {
+    grid-template-columns: repeat(3, 1fr); /* 태블릿 크기에서는 가로 3개 배치 */
+    gap: 15px;
+  }
+}
+
 @media (max-width: 768px) {
   .character-setup-container {
-    margin-left: 200px;
-  }
-  .sidebar-visible .character-setup-container {
+    padding: 10px; /* 모바일에서는 패딩을 줄여 화면 공간 활용 */
     margin-left: 0; /* 모바일에서는 사이드바가 보여도 마진 없음 */
+    padding-top: 60px; /* 상단 패딩을 줄여서 더 많은 공간 확보 */
   }
+
   .character-grid {
-    grid-template-columns: repeat(2, 1fr);/* 모바일에서는 가로 2개 배치 */
-    gap: 10px; 
+    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 가로 2개 배치 */
+    gap: 10px;
+  }
+
+  .character-item {
+    padding: 15px; /* 모바일에서는 내부 패딩을 줄임 */
+  }
+
+  .character-item p {
+    font-size: 16px; /* 모바일에서 글자 크기 조정 */
+  }
+
+  .character-placeholder {
+    width: 120px;
+    height: 120px; /* 모바일에서 크기 조정 */
+    margin-left: 0; /* 모바일에서는 중앙 배치 */
+  }
+
+  .file-upload-container {
+    left: 0; /* 모바일에서는 위치 초기화 */
+    align-items: center;
+  }
+
+  input[type="file"] {
+    left: 0; /* 모바일에서 위치 초기화 */
+    margin: 0;
+  }
+
+  .file-upload-container span {
+    left: 0; /* 모바일에서 위치 초기화 */
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .character-grid {
+    grid-template-columns: 1fr; /* 작은 화면에서는 가로 1개 배치 */
+    gap: 8px;
+  }
+
+  .character-item {
+    padding: 10px; /* 작은 화면에서는 패딩을 더 줄임 */
+  }
+
+  .character-item p {
+    font-size: 14px; /* 작은 화면에서는 더 작은 글자 크기 */
+  }
+
+  .character-placeholder {
+    width: 100px;
+    height: 100px; /* 작은 화면에서 크기 조정 */
   }
 }

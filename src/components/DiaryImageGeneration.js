@@ -179,8 +179,15 @@ function DiaryImageGeneration() {
 
   
   if (isLoading) {
-    return <div className="loading-spinner">이미지를 생성하고 있어요. 잠시만 기다려주세요...</div>;
+    return (
+      <div className="loading-spinner-container">
+        <div className="loading-spinner">
+          이미지를 생성하고 있어요. 잠시만 기다려주세요...
+        </div>
+      </div>
+    );
   }
+  
   if (isAdjusting) {
     return (
       <div className="image-adjustment-container">
