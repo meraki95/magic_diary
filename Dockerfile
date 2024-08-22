@@ -2,14 +2,11 @@ FROM node:14
 
 WORKDIR /app
 
+COPY package*.json ./
 COPY server ./server
-
-WORKDIR /app/server
 
 RUN npm install
 
-RUN npm run build
-
 EXPOSE $PORT
 
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
