@@ -9,13 +9,30 @@ const path = require('path');
 require('dotenv').config();
 
 // Firebase Admin SDK 초기화
-const serviceAccount = require('./serviceAccountKey.json');
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert({
+    "type": process.env.FIREBASE_TYPE,
+    "project_id": process.env.FIREBASE_PROJECT_ID,
+    "private_key_id": process.env.FIREBASE_PRIVATE_KEY_ID,
+    "private_key": process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    "client_email": process.env.FIREBASE_CLIENT_EMAIL,
+    "client_id": process.env.FIREBASE_CLIENT_ID,
+    "auth_uri": process.env.FIREBASE_AUTH_URI,
+    "token_uri": process.env.FIREBASE_TOKEN_URI,
+    "auth_provider_x509_cert_url": process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+    "client_x509_cert_url": process.env.FIREBASE_CLIENT_X509_CERT_URL
+  }),
 });
 
 const app = express();
-app.use(cors());
+
+// CORS 설정
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS.split(','),
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
@@ -23,6 +40,8 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY;
 
 const imageCache = new NodeCache({ stdTTL: 3600 });
+
+// 카카오 로그인 라우트
 app.post('/api/kakaoLogin', async (req, res) => {
   const { kakaoToken } = req.body;
 
@@ -39,17 +58,14 @@ app.post('/api/kakaoLogin', async (req, res) => {
     // Firebase에서 사용자 확인 또는 생성
     let userRecord;
     try {
-      // 먼저 이메일로 사용자 찾기
       userRecord = await admin.auth().getUserByEmail(email);
     } catch (error) {
       if (error.code === 'auth/user-not-found') {
-        // 이메일로 사용자를 찾지 못한 경우, kakaoId로 사용자 찾기 시도
         try {
           const users = await admin.auth().getUsers([{ providerId: 'kakao.com', providerUid: kakaoId.toString() }]);
           if (users.users.length > 0) {
             userRecord = users.users[0];
           } else {
-            // 사용자가 존재하지 않으면 새로 생성
             userRecord = await admin.auth().createUser({
               email: email,
               emailVerified: true,
@@ -75,7 +91,7 @@ app.post('/api/kakaoLogin', async (req, res) => {
       });
     }
 
-    // 커스텀 클레임 설정 (필요한 경우)
+    // 커스텀 클레임 설정
     await admin.auth().setCustomUserClaims(userRecord.uid, { kakaoId: kakaoId });
 
     // Firebase 커스텀 토큰 생성
@@ -87,7 +103,6 @@ app.post('/api/kakaoLogin', async (req, res) => {
     res.status(500).json({ error: '카카오 로그인 처리에 실패했습니다.' });
   }
 });
-
 
 // GPT 일기 생성 라우트
 app.post('/api/generate-diary', async (req, res) => {
@@ -126,7 +141,6 @@ app.post('/api/generate-diary', async (req, res) => {
   }
 });
 
-
 // 레오나르도 API를 사용한 이미지 생성 라우트
 app.post('/api/generate-image', async (req, res) => {
   const { diary, style, characters } = req.body;
@@ -145,10 +159,9 @@ app.post('/api/generate-image', async (req, res) => {
       width: 512,
       height: 512,
       negative_prompt: "people, person, human, character, face, body, hands, feet, text, words, letters, typography, font, signage, symbols, figures, silhouettes, animals",
-      modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // 사실적인 배경을 위한 PhotoReal V2 모델
+      modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3",
       num_images: 1,
     };
-    
 
     const response = await axios.post(
       'https://cloud.leonardo.ai/api/rest/v1/generations',
@@ -249,15 +262,12 @@ app.post('/api/composite-image', async (req, res) => {
     const { backgroundUrl, characters } = req.body;
     console.log("Received request for composite-image:", { backgroundUrl, characters });
 
-    // 배경 이미지 다운로드
     const backgroundResponse = await axios.get(backgroundUrl, { responseType: 'arraybuffer' });
     let background = sharp(backgroundResponse.data);
 
-    // 배경 이미지 크기 얻기
     const { width: bgWidth, height: bgHeight } = await background.metadata();
     console.log("Background image dimensions:", { bgWidth, bgHeight });
 
-    // 각 캐릭터 이미지 합성
     for (let character of characters) {
       console.log("Processing character:", character);
       if (!character.image) {
@@ -269,7 +279,6 @@ app.post('/api/composite-image', async (req, res) => {
         const charResponse = await axios.get(character.image, { responseType: 'arraybuffer' });
         let charImage = sharp(charResponse.data);
 
-        // 캐릭터 이미지 크기 조정 및 투명도 적용
         const resizedChar = await charImage
           .resize({ width: Math.round(bgWidth / 4), height: Math.round(bgHeight / 4), fit: 'inside' })
           .composite([{
@@ -278,7 +287,6 @@ app.post('/api/composite-image', async (req, res) => {
           }])
           .toBuffer();
 
-        // 캐릭터 이미지 합성
         background = background.composite([{ 
           input: resizedChar, 
           top: Math.round(character.y), 
@@ -289,22 +297,20 @@ app.post('/api/composite-image', async (req, res) => {
       }
     }
 
-     // 최종 이미지를 버퍼로 변환
-     const outputBuffer = await background.jpeg().toBuffer();
+    const outputBuffer = await background.jpeg().toBuffer();
+    const base64Image = outputBuffer.toString('base64');
+    const compositedImageUrl = `data:image/jpeg;base64,${base64Image}`;
 
-     // 이미지를 Base64로 인코딩
-     const base64Image = outputBuffer.toString('base64');
-     const compositedImageUrl = `data:image/jpeg;base64,${base64Image}`;
- 
-     console.log("Composite image created successfully");
-     res.json({ compositedImageUrl });
-   } catch (error) {
-     console.error('이미지 합성 오류:', error);
-     res.status(500).json({ error: '이미지 합성에 실패했습니다.' });
-   }
- });
+    console.log("Composite image created successfully");
+    res.json({ compositedImageUrl });
+  } catch (error) {
+    console.error('이미지 합성 오류:', error);
+    res.status(500).json({ error: '이미지 합성에 실패했습니다.' });
+  }
+});
+
 // 정적 파일 제공을 위한 미들웨어
-app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
+app.use('/images', express.static(path.join(process.cwd(), 'public', 'images')));
 
 app.get('/api/diary-count/:userId', async (req, res) => {
   try {
@@ -412,7 +418,16 @@ app.post('/api/ai-counseling', async (req, res) => {
     res.status(500).json({ message: 'AI 상담에 실패했습니다. 잠시 후 다시 시도해 주세요.' });
   }
 });
+
+// 전역 에러 핸들러
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log('Environment:', process.env.NODE_ENV);
+  console.log('Firebase initialized:', admin.apps.length > 0);
 });
