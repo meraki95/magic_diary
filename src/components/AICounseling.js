@@ -19,7 +19,7 @@ function AICounseling() {
       const auth = getAuth();
       const user = auth.currentUser;
       if (user) {
-        const response = await axios.get(`http://localhost:5000/api/diary-count/${user.uid}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diary-count/${user.uid}`);
         setDiaryCount(response.data.count);
       }
     } catch (error) {
@@ -41,7 +41,7 @@ function AICounseling() {
           return;
         }
 
-        const response = await axios.post('http://localhost:5000/api/ai-counseling', {
+        const response = await axios.post('${process.env.REACT_APP_API_URL}/api/ai-counseling', {
           userId: user.uid,
         });
 

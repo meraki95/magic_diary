@@ -85,7 +85,7 @@ function DiaryForm() {
     
 
       // GPT를 이용한 일기 생성 로직
-      const response = await axios.post('http://localhost:5000/api/generate-diary', {
+      const response = await axios.post('${process.env.REACT_APP_API_URL}/api/generate-diary', {
         userInput: entry,
         prompt: finalPrompt,
         selectedDate, // 선택한 날짜를 서버로 전송

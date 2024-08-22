@@ -22,7 +22,7 @@ function DiarySelection() {
   const handleRegenerateContent = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/generate-diary', {
+      const response = await axios.post('${process.env.REACT_APP_API_URL}/api/generate-diary', {
         userInput,
         prompt: selectedStyle,
       });

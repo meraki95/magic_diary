@@ -121,7 +121,7 @@ function Home({ toggleSidebar }) {
       const auth = getAuth();
       const user = auth.currentUser;
       if (user) {
-        const response = await axios.get(`http://localhost:5000/api/diary-count/${user.uid}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/diary-count/${user.uid}`);
         setDiaryCount(response.data.count);
         if (response.data.count >= 5) {
           fetchAiAdvice(user.uid);
@@ -134,7 +134,7 @@ function Home({ toggleSidebar }) {
 
   const fetchAiAdvice = async (userId) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/ai-counseling', {
+      const response = await axios.post('${process.env.REACT_APP_API_URL}/api/ai-counseling', {
         userId: userId,
       });
       setAiAdvice(response.data.advice);

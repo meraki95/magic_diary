@@ -49,7 +49,7 @@ function DiaryImageGeneration() {
   const generateImage = useCallback(async (loadedCharacters) => {
     console.log("Generating image...");
     try {
-      const response = await axios.post('http://localhost:5000/api/generate-image', {
+      const response = await axios.post('${process.env.REACT_APP_API_URL}/api/generate-image', {
         diary: selectedDiary,
         characters: loadedCharacters
       });
@@ -125,7 +125,7 @@ function DiaryImageGeneration() {
       }
 
       // 이미지 합성 API 호출
-      const response = await axios.post('http://localhost:5000/api/composite-image', {
+      const response = await axios.post('${process.env.REACT_APP_API_URL}/api/composite-image', {
         backgroundUrl: generatedImage,
         characters: adjustedCharacters
       });
