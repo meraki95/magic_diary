@@ -56,7 +56,7 @@ function Login() {
   const sendKakaoTokenToServer = async (kakaoToken) => {
     try {
       // 서버에 카카오 토큰을 전송하고 Firebase 커스텀 토큰을 받아옵니다
-      const response = await axios.post('/api/kakaoLogin', { kakaoToken });
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/kakaoLogin`, { kakaoToken });
       const firebaseToken = response.data.firebaseToken;
 
       // Firebase 커스텀 토큰으로 로그인
