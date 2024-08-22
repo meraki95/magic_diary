@@ -9,7 +9,6 @@ const path = require('path');
 require('dotenv').config();
 
 // Firebase Admin SDK 초기화
-const serviceAccount = require('./serviceAccountKey.json');
 admin.initializeApp({
   credential: admin.credential.cert({
     "type": process.env.FIREBASE_TYPE,
@@ -424,6 +423,6 @@ app.post('/api/ai-counseling', async (req, res) => {
   }
 });
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0',() => {
   console.log(`Server is running on port ${PORT}`);
 });
