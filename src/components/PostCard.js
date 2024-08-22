@@ -14,7 +14,6 @@ function PostCard({ post, refreshPosts, currentUser }) {
   const [isLoading, setIsLoading] = useState(true);
   const [showFriendAction, setShowFriendAction] = useState(false);
   const [visibility, setVisibility] = useState(post.visibility);
-  const auth = getAuth();
   const db = getFirestore();
   const navigate = useNavigate();
 

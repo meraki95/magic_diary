@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/DiaryForm.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getFirestore, doc, getDoc, collection, addDoc } from 'firebase/firestore'; // Firestore에 데이터 저장 관련 함수 추가
+import { getFirestore, doc, getDoc} from 'firebase/firestore'; // Firestore에 데이터 저장 관련 함수 추가
 import { getAuth } from 'firebase/auth';
 
 function DiaryForm() {
@@ -76,8 +76,6 @@ function DiaryForm() {
         prompt = "사용자가 언급한 사실을 바탕으로 400자 내외로 감성적인 톤으로 일기를 작성해줘. 구체적인 묘사와 감정 표현을 포함해.";
     }
 
-    // 주인공 이름들을 추출
-    const characterNames = characters.map(char => char.name).filter(name => name.trim() !== "");
     
 
     // 최종 프롬프트 생성

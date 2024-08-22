@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signOut, updatePassword } from 'firebase/auth';
+import { signOut} from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs, updateDoc, limit,orderBy } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
@@ -9,8 +9,6 @@ import '../styles/Profile.css';
 function Profile() {
   const [profileData, setProfileData] = useState({ email: '', photoURL: '', displayName: '' });
   const [isLoading, setIsLoading] = useState(true);
-  const [showPasswordChange, setShowPasswordChange] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
   const [friends, setFriends] = useState([]);
   const [showFriends, setShowFriends] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);

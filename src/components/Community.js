@@ -14,7 +14,7 @@ function Community({ sidebarVisible }) {
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [newPost, setNewPost] = useState({ content: '', diaryContent: '', image: null, entryDate: null, visibility: 'public' });
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [setSelectedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 

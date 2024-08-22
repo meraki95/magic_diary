@@ -176,10 +176,7 @@ function DiaryImageGeneration() {
     setIsAdjusting(true);
   };
 
-  const handleViewSavedDiary = () => {
-    navigate(`/view-saved-diary/${savedDiaryId}`);
-  };
-
+  
   if (isLoading) {
     return <div className="loading-spinner">이미지를 생성하고 있어요. 잠시만 기다려주세요...</div>;
   }
