@@ -1,92 +1,85 @@
 .home-container {
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
-  text-align: center;
-  background-color: #1E1E2E;
+  background-color: #2E2E3A;
   color: #E5E5E5;
-  min-height: 100vh;
-  margin-left: 250px; /* 사이드바 공간을 고려하여 전체 페이지를 오른쪽으로 이동 */
 }
 
-body {
-  font-family: 'Nunito', sans-serif;
-  background-color: #1E1E2E;
-  color: #E5E5E5;
-  margin: 0;
-}
 .welcome-card {
-  background-color: #2E2E3A;
-  padding: 15px;
+  background-color: #3A3A4F;
+  padding: 20px;
   border-radius: 10px;
+  text-align: center;
   margin-bottom: 20px;
+}
+
+.welcome-card h1 {
+  color: #6C63FF;
+  margin-bottom: 10px;
 }
 
 .quick-access {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 30px;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .card {
-  background-color: #2E2E3A;
-  padding: 15px;
+  background-color: #3A3A4F;
+  padding: 20px;
   border-radius: 10px;
-  cursor: pointer;
-  width: 120px;
   text-align: center;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-basis: 30%;
 }
 
 .card:hover {
-  transform: translateY(-10px);
-  background-color: #444460;
+  background-color: #4B48E0;
 }
 
 .card-icon {
-  font-size: 22px;
+  font-size: 24px;
   margin-bottom: 10px;
-  color: #FFD700;
+  color: #6C63FF;
 }
 
 .section {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .section h2 {
-  font-size: 20px;
+  color: #6C63FF;
   margin-bottom: 10px;
 }
 
 .highlight-box {
-  background-color: #2E2E3A;
+  background-color: #3A3A4F;
   padding: 15px;
   border-radius: 10px;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 1024px) {
-  .home-container {
-    margin-left: 200px; /* 더 작은 사이드바 크기에 맞춰 조정 */
-  }
+.highlight-icon {
+  font-size: 24px;
+  margin-right: 15px;
+  color: #6C63FF;
+}
 
+.recent-activity {
+  background-color: #3A3A4F;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+@media (max-width: 600px) {
   .quick-access {
     flex-direction: column;
-    gap: 15px;
   }
 
   .card {
-    width: 80%;
-    margin: 0 auto;
-  }
-}
-
-@media (max-width: 768px) {
-  .home-container {
-    margin-left: 0; /* 작은 화면에서는 사이드바 공간을 고려하지 않음 */
-  }
-
-  .quick-access {
-    flex-direction: column;
-    align-items: center;
+    margin-bottom: 10px;
   }
 }

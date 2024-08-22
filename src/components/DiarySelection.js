@@ -1,28 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/DiarySelection.css';
 
-function DiarySelection({ gptOptions = [], handleSelection, handleRefresh }) {
-  const [selectedDiary, setSelectedDiary] = useState(null);
+function DiarySelection() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { gptOptions, userInput, selectedStyle,selectedDate} = location.state;
+  const [diaryOptions, setDiaryOptions] = useState(gptOptions);
+  const [selectedDiary, setSelectedDiary] = useState(gptOptions[0]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (gptOptions.length > 0) {
-      setSelectedDiary(gptOptions[0]); // 첫 번째 옵션을 기본 선택
-    }
-  }, [gptOptions]);
-
-  const handleDiaryClick = (diary) => {
+  const handleDiarySelect = (diary) => {
     setSelectedDiary(diary);
   };
 
-  const handleConfirm = () => {
-    if (selectedDiary) {
-      console.log('Navigating to /generate-image with state:', { selectedDiary });
-      navigate('/generate-image', { state: { selectedDiary } }); // DiaryImageGeneration 화면으로 이동
-    } else {
-      console.warn('No diary selected. Navigation aborted.');
-      navigate('/generate-image', { state: { selectedDiary } }); // DiaryImageGeneration 화면으로 이동
+  const handleSubmit = () => {
+    navigate('/generate-image', { state: { selectedDiary, userInput, selectedStyle ,selectedDate} });
+  };
+
+  const handleRegenerateContent = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post('http://localhost:5000/api/generate-diary', {
+        userInput,
+        prompt: selectedStyle,
+      });
+      const { diaryOptions: newDiaryOptions } = response.data;
+      setDiaryOptions(newDiaryOptions);
+      setSelectedDiary(newDiaryOptions[0]);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('GPT 일기 재생성 오류:', error);
+      setIsLoading(false);
+      alert('일기 재생성에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -30,24 +41,22 @@ function DiarySelection({ gptOptions = [], handleSelection, handleRefresh }) {
     <div className="diary-selection-container">
       <h2>일기 선택하기</h2>
       <div className="diary-options">
-        {gptOptions.length > 0 ? (
-          gptOptions.map((option, index) => (
-            <div
-              key={index}
-              className={`diary-option ${selectedDiary === option ? 'selected' : ''}`}
-              onClick={() => handleDiaryClick(option)}
-            >
-              {option}
-            </div>
-          ))
-        ) : (
-          <p>일기를 불러오는 중....</p>
-        )}
+        {diaryOptions.map((diary, index) => (
+          <div
+            key={index}
+            className={`diary-option ${selectedDiary === diary ? 'selected' : ''}`}
+            onClick={() => handleDiarySelect(diary)}
+          >
+            <p>{diary}</p>
+          </div>
+        ))}
       </div>
-      <div className="diary-actions">
-        <button onClick={handleConfirm}>맘에 들어요 저장할게요!</button>
-        <button onClick={handleRefresh}>이상해요! 다른 내용으로 받을게요!</button>
-      </div>
+      <button onClick={handleSubmit} className="submit-button">
+        이 일기로 할게요!
+      </button>
+      <button onClick={handleRegenerateContent} className="regenerate-button" disabled={isLoading}>
+        {isLoading ? '생성 중...' : '다른 일기를 받아올게요!'}
+      </button>
     </div>
   );
 }

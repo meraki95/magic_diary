@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  text-align: center;
   padding: 40px 20px;
   background-color: #2E2E3A;
   border-radius: 10px;
@@ -15,77 +13,65 @@
 }
 
 .profile-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 30px;
-  text-align: center;
   width: 100%;
 }
 
-.profile-image {
+.profile-image, .profile-placeholder {
   width: 225px;
   height: 225px;
-  object-fit: cover;
-  border-radius: 15px;
+  border-radius: 50%;
   margin-bottom: 15px;
 }
 
+.profile-image {
+  object-fit: cover;
+}
+
 .profile-placeholder {
-  width: 225px;
-  height: 225px;
   background-color: #3A3A4F;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #E5E5E5;
-  border-radius: 15px;
-  margin-bottom: 15px;
-  margin: 0 auto;
+  text-align: center;
 }
 
 .file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-input[type="file"] {
-  cursor: pointer;
   margin-top: 15px;
-  font-size: 14px;
-  width: 100%;
-  max-width: 225px;
 }
 
-.file-upload-container span {
-  display: block;
+.upload-btn {
+  background-color: #6C63FF;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
   margin-top: 10px;
-  font-size: 1.2em;
 }
 
-.profile-details {
+.profile-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  width: 100%;
-  margin-bottom: 30px;
-  font-size: 15px;
-}
-
-.profile-details p {
-  margin: 10px 0;
   width: 100%;
 }
 
-.profile-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  width: 100%;
+.profile-content h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #6C63FF;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.password-change-btn,
-.logout-btn {
+.friends-list-btn, .logout-btn {
   background-color: #6C63FF;
   color: #FFFFFF;
   padding: 15px 30px;
@@ -95,29 +81,46 @@ input[type="file"] {
   font-size: 15px;
   width: 100%;
   max-width: 250px;
+  margin-bottom: 15px;
 }
 
-.password-change-btn:hover,
-.logout-btn:hover {
-  background-color: #4B48E0;
+.friends-list {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #3A3A4F;
+  border-radius: 7.5px;
+  margin-bottom: 10px;
+}
+
+.friend-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.view-posts-btn {
+  background-color: #6C63FF;
+  color: #FFFFFF;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 @media (max-width: 768px) {
-  .profile-container {
-    padding: 20px 10px;
-  }
-
-  .profile-image,
-  .profile-placeholder {
+  .profile-image, .profile-placeholder {
     width: 180px;
     height: 180px;
-  }
-
-  .profile-details {
-    font-size: 1em;
-  }
-
-  input[type="file"] {
-    max-width: 180px;
   }
 }

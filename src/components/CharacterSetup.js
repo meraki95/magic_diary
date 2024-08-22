@@ -1,23 +1,103 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import '../styles/CharacterSetup.css';
 
 function CharacterSetup() {
-  const [profiles, setProfiles] = useState([
-    { name: '인물 1', image: null },
-    { name: '인물 2', image: null },
-    { name: '인물 3', image: null },
-    { name: '인물 4', image: null },
-  ]);
+  const [profiles, setProfiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleImageUpload = (index, file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const updatedProfiles = [...profiles];
-      updatedProfiles[index].image = reader.result;
-      setProfiles(updatedProfiles);
+  useEffect(() => {
+    const loadCharacters = async () => {
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+          throw new Error('사용자가 인증되지 않았습니다.');
+        }
+
+        const db = getFirestore();
+        const userId = user.uid;
+        const userDocRef = doc(db, 'users', userId);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          setProfiles(userData.characters || [
+            { name: '인물 1', image: null },
+            { name: '인물 2', image: null },
+            { name: '인물 3', image: null },
+            { name: '인물 4', image: null },
+          ]);
+        } else {
+          setProfiles([
+            { name: '인물 1', image: null },
+            { name: '인물 2', image: null },
+            { name: '인물 3', image: null },
+            { name: '인물 4', image: null },
+          ]);
+        }
+      } catch (error) {
+        console.error('캐릭터 설정 불러오기 실패:', error);
+        setProfiles([
+          { name: '인물 1', image: null },
+          { name: '인물 2', image: null },
+          { name: '인물 3', image: null },
+          { name: '인물 4', image: null },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    reader.readAsDataURL(file);
+
+    loadCharacters();
+  }, []);
+
+  const handleImageUpload = async (index, file) => {
+    const storage = getStorage();
+    const auth = getAuth();
+    const userId = auth.currentUser.uid;
+    const storageRef = ref(storage, `profile_images/${userId}/${index}_${file.name}`);
+
+    try {
+      await uploadBytes(storageRef, file);
+      const downloadUrl = await getDownloadURL(storageRef);
+
+      const updatedProfiles = [...profiles];
+      updatedProfiles[index].image = downloadUrl;
+      setProfiles(updatedProfiles);
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+    }
   };
+
+  const handleNameChange = (index, newName) => {
+    const updatedProfiles = [...profiles];
+    updatedProfiles[index].name = newName;
+    setProfiles(updatedProfiles);
+  };
+
+  const handleSave = async () => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      const userId = user.uid;
+      const db = getFirestore();
+      const userDocRef = doc(db, 'users', userId);
+
+      await setDoc(userDocRef, { characters: profiles }, { merge: true });
+      alert('캐릭터 설정이 저장되었습니다.');
+    } catch (error) {
+      console.error('캐릭터 설정 저장 실패:', error);
+      alert('캐릭터 설정 저장에 실패했습니다.');
+    }
+  };
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
 
   return (
     <div className="character-setup-container">
@@ -28,10 +108,14 @@ function CharacterSetup() {
             {profile.image ? (
               <img src={profile.image} alt={profile.name} />
             ) : (
-              // 클래스 이름 수정
               <div className="character-placeholder">업로드된 사진이 없습니다.</div>
             )}
-            <p>{profile.name}</p>
+            <input
+              type="text"
+              value={profile.name}
+              onChange={(e) => handleNameChange(index, e.target.value)}
+              className="name-input"
+            />
             <input
               type="file"
               onChange={(e) => handleImageUpload(index, e.target.files[0])}
@@ -40,6 +124,7 @@ function CharacterSetup() {
           </div>
         ))}
       </div>
+      <button onClick={handleSave} className="save-button">설정 저장</button>
     </div>
   );
 }

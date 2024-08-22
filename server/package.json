@@ -12,7 +12,13 @@
   "description": "",
   "dependencies": {
     "axios": "^1.7.4",
+    "canvas": "^2.11.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "firebase-admin": "^12.3.1"
+    "firebase-admin": "^12.3.1",
+    "node-cache": "^5.1.2",
+    "react-draggable": "^4.4.6",
+    "sharp": "^0.33.5"
   }
 }

@@ -15,6 +15,7 @@ import DiarySelection from './components/DiarySelection';
 import DiaryImageGeneration from './components/DiaryImageGeneration';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import UserPosts from './components/UserPosts';
 
 import './App.css';
 
@@ -64,6 +65,7 @@ function AppContent() {
           <Route path="/community" element={<Community sidebarVisible={sidebarVisible} />} />
           <Route path="/select-diary" element={<DiarySelection />} />
           <Route path="/generate-image" element={<DiaryImageGeneration />} />
+          <Route path="/user/:userId" element={<UserPosts />} />
         </Routes>
       </div>
     </div>

@@ -10,9 +10,13 @@
   color: #E5E5E5;
   min-height: 100vh;
   padding-top: 80px;
-  margin-left: 250px;
+  margin-left: 0; /* 기본 마진 제거 */
+  transition: margin-left 0.3s ease; /* 부드러운 전환 효과 */
 }
 
+.sidebar-visible .character-setup-container {
+  margin-left: 250px; /* 사이드바가 보일 때만 마진 적용 */
+}
 .character-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 사진을 가로로 4개 배치 */
@@ -98,8 +102,11 @@ input[type="file"] {
   .character-setup-container {
     margin-left: 200px;
   }
-
+  .sidebar-visible .character-setup-container {
+    margin-left: 0; /* 모바일에서는 사이드바가 보여도 마진 없음 */
+  }
   .character-grid {
-    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 가로 2개 배치 */
+    grid-template-columns: repeat(2, 1fr);/* 모바일에서는 가로 2개 배치 */
+    gap: 10px; 
   }
 }

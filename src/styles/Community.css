@@ -1,53 +1,39 @@
 .community-container {
-  background-color:#2E2E3A;
-  min-height: 100vh;
-  padding: 60px 0 0 250px;
-  transition: padding-left 0.3s ease;
-}
-
-.community-header {
-  background-color: #ffffff;
-  border-bottom: 1px solid #dbdbdb;
-  padding: 15px 0;
-  position: fixed;
-  top: 0;
-  left: 250px;
-  right: 0;
-  z-index: 1000;
-  transition: left 0.3s ease;
-}
-
-.community-header h2 {
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  color: #262626;
-}
-
-.posts-container {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.sidebar-hidden .community-container {
-  padding-left: 0;
+.community-header h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.sidebar-hidden .community-header {
-  left: 0;
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-@media (max-width: 768px) {
-  .community-container {
-    padding: 80px 10px 0 10px;
-  }
-  
-  .community-header {
-    left: 0;
-  }
-  
-  .posts-container {
-    padding: 10px;
-  }
+.new-post-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #0095f6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.new-post-button:hover {
+  background-color: #0081d6;
 }

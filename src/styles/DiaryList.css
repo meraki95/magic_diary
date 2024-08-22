@@ -1,8 +1,8 @@
 .diary-list-container {
   padding: 20px;
-  background-color: #2E2E3A;
+  background-color: #ffffff;
   border-radius: 10px;
-  color: #E5E5E5;
+  color: #333333;
   min-height: 100vh;
   margin-left: 260px;
   text-align: center;
@@ -11,33 +11,89 @@
 h2 {
   font-size: 24px;
   margin-bottom: 20px;
+  color: #333333;
 }
 
+.rbc-calendar {
+  background-color: #ffffff;
+  color: #333333;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 추가 */
+}
 
+.rbc-toolbar {
+  background-color: #f0f0f0;
+  color: #333333;
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.rbc-toolbar button {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.rbc-toolbar button:hover {
+  background-color: #f0f0f0;
+}
+
+.rbc-header {
+  background-color: #f8f8f8;
+  color: #333333;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.rbc-month-view {
+  background-color: #ffffff;
+}
+
+.rbc-today {
+  background-color: #e8f4f8 !important;
+  color: #007bff !important;
+}
 
 .rbc-event {
   border-radius: 5px;
   background-size: cover !important;
   background-position: center;
-  color: white;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  color: transparent;
+  text-shadow: none;
   padding: 5px;
+  border: none;
 }
 
-.rbc-calendar {
-  background-color: #1A1A2E;
-  color: #E5E5E5;
+.event-preview {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 20px;
   border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
 }
 
-.rbc-toolbar {
-  background-color: #2E2E3A;
-  color: #FFD700;
+.event-preview img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
 }
 
-.rbc-today {
-  background-color: #4B48E0;
-  color: #FFD700;
+.event-preview p {
+  color: #333333;
+  text-align: left;
+  white-space: pre-wrap;
 }
 
 /* 반응형 디자인 */
@@ -50,4 +106,10 @@ h2 {
   .rbc-calendar {
     font-size: 14px;
   }
+
+  .event-preview {
+    max-width: 95%;
+    max-height: 95%;
+  }
+  
 }

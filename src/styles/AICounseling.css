@@ -1,4 +1,4 @@
-.character-setup-container {
+.ai-counseling-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,128 +10,146 @@
   color: #E5E5E5;
   min-height: 100vh;
   padding-top: 80px;
-  margin-left: 0; /* 기본 마진 제거 */
-  transition: margin-left 0.3s ease; /* 부드러운 전환 효과 */
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
 }
 
-.sidebar-visible .character-setup-container {
-  margin-left: 250px; /* 사이드바가 보일 때만 마진 적용 */
+.sidebar-visible .ai-counseling-container {
+  margin-left: 250px;
 }
 
-.character-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 사진을 가로로 4개 배치 */
-  gap: 20px;
-  width: 100%;
-  max-width: 1500px;
-  margin-top: 20px;
-}
-
-.character-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+.counseling-info {
   background-color: #1A1A2E;
   padding: 20px;
   border-radius: 10px;
-}
-
-.character-item img {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.character-placeholder {
-  width: 150px;
-  height: 150px;
-  background-color: #3A3A4F;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #E5E5E5;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  margin-left: -20px; /* 원하는 위치로 이동 */
-}
-
-.file-upload-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   margin-bottom: 20px;
-  position: relative; /* 위치 설정 가능하게 함 */
-  left: 30px; /* 전체 컨테이너를 오른쪽으로 이동 */
+  max-width: 600px;
+  width: 100%;
 }
 
-input[type="file"] {
-  cursor: pointer;
-  margin-top: 10px;
-  position: relative;
-  left: 20px; /* 파일 선택 버튼 자체를 오른쪽으로 이동 */
+.diary-count {
+  font-size: 24px;
+  font-weight: bold;
+  color: #FFD700;
 }
 
-.file-upload-container span {
-  position: relative;
-  left: 20px; /* "선택된 파일 없음" 텍스트를 더 오른쪽으로 이동 */
-  margin-top: 5px;
+.warning-message {
+  background-color: #3A3A4F;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  max-width: 600px;
+  width: 100%;
 }
 
-.character-item p {
-  font-size: 18px;
-  margin: 10px 0;
-}
-
-.upload-input {
-  margin-top: 10px;
-}
-
-.upload-input[type="file"] {
-  display: block;
-  margin: 0 auto;
-  cursor: pointer;
+.analyze-button {
+  background-color: #4A4A5A;
   color: #E5E5E5;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
 }
 
-/* 반응형 디자인 */
+.analyze-button:hover {
+  background-color: #5A5A6A;
+}
+
+.analyze-button:disabled {
+  background-color: #3A3A4F;
+  cursor: not-allowed;
+}
+
+.analysis-result {
+  background-color: #1A1A2E;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  text-align: left;
+  max-width: 800px;
+  width: 100%;
+}
+
+.analysis-result h3 {
+  color: #FFD700;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.result-item {
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.result-item strong {
+  color: #FFD700;
+}
+
+.advice-box {
+  background-color: #3A3A4F;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  position: relative;
+  overflow: visible;
+}
+
+.advice-box::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #3A3A4F;
+}
+
+.advice-box h4 {
+  color: #FFD700;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.error-message {
+  color: #FF6347;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
-  .character-setup-container {
-    margin-left: 0;
+  .ai-counseling-container {
     padding: 10px;
     padding-top: 60px;
   }
 
-  .sidebar-visible .character-setup-container {
-    margin-left: 0; /* 모바일에서는 사이드바가 보여도 마진 없음 */
-  }
-
-  .character-grid {
-    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 가로 2개 배치 */
-    gap: 10px;
-  }
-
-  .character-item {
-    padding: 10px;
-  }
-
-  .character-placeholder {
-    width: 100px;
-    height: 100px;
+  .sidebar-visible .ai-counseling-container {
     margin-left: 0;
   }
 
-  input[type="file"] {
+  .analyze-button {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .analysis-result, .advice-box {
+    padding: 15px;
+  }
+
+  .analysis-result h3 {
+    font-size: 20px;
+  }
+
+  .result-item {
     font-size: 14px;
-    left: 0;
   }
 
-  .file-upload-container {
-    left: 0;
-  }
-
-  .file-upload-container span {
-    left: 0;
+  .advice-box h4 {
+    font-size: 18px;
   }
 }
