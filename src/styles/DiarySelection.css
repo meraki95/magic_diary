@@ -31,13 +31,26 @@ h2 {
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 2px solid transparent; /* 기본 상태에서는 투명한 테두리 */
 }
 
 .diary-option.selected {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.8); /* 선택된 항목에 테두리 강조 */
+  animation: pulse 1s infinite; /* 선택된 항목에 애니메이션 적용 */
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
 }
 
 .diary-option:hover {
