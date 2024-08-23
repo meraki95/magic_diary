@@ -69,7 +69,7 @@ function CharacterSetup() {
 
   const handleNameChange = (index, newName) => {
     const updatedProfiles = [...profiles];
-    updatedProfiles[index].name = newName;
+    updatedProfiles[index].name = newName.trim() || `인물 ${index + 1}`;
     setProfiles(updatedProfiles);
   };
 
@@ -81,7 +81,13 @@ function CharacterSetup() {
       const db = getFirestore();
       const userDocRef = doc(db, 'users', userId);
 
-      await setDoc(userDocRef, { characters: profiles }, { merge: true });
+      // 저장 전에 빈 이름을 기본 이름으로 설정
+      const updatedProfiles = profiles.map((profile, index) => ({
+        ...profile,
+        name: profile.name.trim() || `인물 ${index + 1}`
+      }));
+
+      await setDoc(userDocRef, { characters: updatedProfiles }, { merge: true });
       alert('캐릭터 설정이 저장되었습니다.');
       navigate('/home');
     } catch (error) {
@@ -94,6 +100,14 @@ function CharacterSetup() {
     if (profiles[index].name.startsWith('인물 ')) {
       const updatedProfiles = [...profiles];
       updatedProfiles[index].name = '';
+      setProfiles(updatedProfiles);
+    }
+  };
+
+  const handleInputBlur = (index) => {
+    const updatedProfiles = [...profiles];
+    if (!updatedProfiles[index].name.trim()) {
+      updatedProfiles[index].name = `인물 ${index + 1}`;
       setProfiles(updatedProfiles);
     }
   };
@@ -118,6 +132,7 @@ function CharacterSetup() {
               value={profile.name}
               onChange={(e) => handleNameChange(index, e.target.value)}
               onFocus={() => handleInputFocus(index)}
+              onBlur={() => handleInputBlur(index)}
               className="name-input"
             />
             <input

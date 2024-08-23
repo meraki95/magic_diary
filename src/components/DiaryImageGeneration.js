@@ -4,7 +4,7 @@ import axios from 'axios';
 import { getFirestore, doc, getDoc, addDoc, collection } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
-import Draggable from 'react-draggable';
+import { Rnd } from 'react-rnd';
 import '../styles/DiaryImageGeneration.css';
 
 
@@ -23,6 +23,17 @@ function DiaryImageGeneration() {
   const [remainingRefreshes, setRemainingRefreshes] = useState(3);
   const isFirstRender = useRef(true);
   
+  const handleResize = (index, ref, position, size) => {
+    const updatedCharacters = [...adjustedCharacters];
+    updatedCharacters[index] = {
+      ...updatedCharacters[index],
+      x: position.x,
+      y: position.y,
+      width: size.width,
+      height: size.height
+    };
+    setAdjustedCharacters(updatedCharacters);
+  };
 
   const loadCharacters = useCallback(async () => {
     console.log("Loading characters...");
@@ -128,7 +139,11 @@ function DiaryImageGeneration() {
       // 이미지 합성 API 호출
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/composite-image`, {
         backgroundUrl: generatedImage,
-        characters: adjustedCharacters
+        characters: adjustedCharacters.map(char => ({
+          ...char,
+          width: char.width,
+          height: char.height
+        }))
       });
 
       const compositedImageUrl = response.data.compositedImageUrl;
@@ -188,23 +203,38 @@ function DiaryImageGeneration() {
     );
   }
   
-  if (isAdjusting) {
+   if (isAdjusting) {
     return (
       <div className="image-adjustment-container">
         <div className="background-image" style={{backgroundImage: `url(${generatedImage})`}}>
           {adjustedCharacters.map((char, index) => (
-            <Draggable
+            <Rnd
               key={index}
-              onDrag={(e, ui) => handleDrag(index, e, ui)}
-              defaultPosition={{x: char.x, y: char.y}}
+              default={{
+                x: char.x,
+                y: char.y,
+                width: char.width || 100,
+                height: char.height || 100
+              }}
+              onDragStop={(e, d) => {
+                handleDrag(index, e, { deltaX: d.x - char.x, deltaY: d.y - char.y });
+              }}
+              onResize={(e, direction, ref, delta, position) =>
+                handleResize(index, ref, position, { width: ref.offsetWidth, height: ref.offsetHeight })
+              }
+              bounds="parent"
             >
               <img 
                 src={char.image} 
                 alt={char.name}
-                style={{opacity: char.opacity}}
-                className="draggable-character"
+                style={{
+                  opacity: char.opacity,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
               />
-            </Draggable>
+            </Rnd>
           ))}
         </div>
         <div className="adjustment-controls">
