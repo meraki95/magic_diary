@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import '../styles/DiaryForm.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getFirestore, doc, getDoc} from 'firebase/firestore'; // Firestore에 데이터 저장 관련 함수 추가
+import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Firestore에 데이터 저장 관련 함수 추가
 import { getAuth } from 'firebase/auth';
 
 function DiaryForm() {
   const [entry, setEntry] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("감성적");
   const [selectedDate, setSelectedDate] = useState(() => {
-    // 오늘 날짜를 기본값으로 설정
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
@@ -24,8 +23,16 @@ function DiaryForm() {
   const loadCharacters = async () => {
     try {
       const auth = getAuth();
+      const currentUser = auth.currentUser;
+
+      // 로그인 여부 확인
+      if (!currentUser) {
+        console.log("로그인된 사용자가 없습니다.");
+        return;
+      }
+
       const db = getFirestore();
-      const userDocRef = doc(db, 'users', auth.currentUser.uid);
+      const userDocRef = doc(db, 'users', currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
@@ -76,19 +83,13 @@ function DiaryForm() {
         prompt = "사용자가 언급한 사실을 바탕으로 400자 내외로 감성적인 톤으로 일기를 작성해줘. 구체적인 묘사와 감정 표현을 포함해.";
     }
 
-    
-
-    // 최종 프롬프트 생성
     const finalPrompt = prompt;
 
     try {
-    
-
-      // GPT를 이용한 일기 생성 로직
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/generate-diary`, {
         userInput: entry,
         prompt: finalPrompt,
-        selectedDate, // 선택한 날짜를 서버로 전송
+        selectedDate,
       });
 
       const { diaryOptions } = response.data;
@@ -124,7 +125,6 @@ function DiaryForm() {
         ))}
       </div>
 
-      {/* 날짜 선택 필드 추가 */}
       <div className="date-picker">
         <label htmlFor="diary-date"></label>
         <input
@@ -136,7 +136,6 @@ function DiaryForm() {
         />
       </div>
 
-      <form onSubmit={handleSubmit}>
       <form onSubmit={handleSubmit} className="diary-form">
         <textarea
           value={entry}
@@ -147,8 +146,8 @@ function DiaryForm() {
         <button type="submit" className="generate-button" disabled={isLoading}>
           {isLoading ? '생성 중...' : '일기 및 이미지 생성하기'}
         </button>
-        </form>
       </form>
+
       {isLoading && <div className="loading-spinner">일기를 생성하고 있어요. 잠시만 기다려주세요...</div>}
     </div>
   );

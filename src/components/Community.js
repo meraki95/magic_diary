@@ -6,7 +6,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, S
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { getFirestore, collection, doc, getDoc, query, where, getDocs, addDoc, orderBy, limit, Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDoc, query, where, getDocs, addDoc, deleteDoc, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 function Community({ sidebarVisible }) {
@@ -14,7 +14,7 @@ function Community({ sidebarVisible }) {
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [newPost, setNewPost] = useState({ content: '', diaryContent: '', image: null, entryDate: null, visibility: 'public' });
-  const [selectedFile, setSelectedFile] = useState(null); // 수정된 부분
+  const [selectedFile, setSelectedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -47,7 +47,6 @@ function Community({ sidebarVisible }) {
 
       let postsToShow = [];
 
-      // 사용자 자신의 게시물을 가져옵니다.
       const userPostsQuery = query(
         collection(db, 'posts'),
         where('userId', '==', currentUser.uid),
@@ -57,7 +56,6 @@ function Community({ sidebarVisible }) {
       const userPostsSnapshot = await getDocs(userPostsQuery);
       postsToShow = userPostsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      // 친구들의 게시물을 가져옵니다.
       if (friendIds.length > 0) {
         const friendPostsQuery = query(
           collection(db, 'posts'),
@@ -71,7 +69,6 @@ function Community({ sidebarVisible }) {
         postsToShow = [...postsToShow, ...friendPosts];
       }
 
-      // 공개 게시물을 가져옵니다.
       const publicPostsQuery = query(
         collection(db, 'posts'),
         where('visibility', '==', 'public'),
@@ -83,7 +80,6 @@ function Community({ sidebarVisible }) {
       const publicPosts = publicPostsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       postsToShow = [...postsToShow, ...publicPosts];
 
-      // 날짜순으로 정렬
       postsToShow.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
 
       setPosts(postsToShow);
@@ -154,19 +150,51 @@ function Community({ sidebarVisible }) {
         likes: [],
         comments: [],
         entryDate: newPost.entryDate,
-        createdAt: Timestamp.now(), // Firestore의 Timestamp를 명확히 사용
+        createdAt: Timestamp.now(),
         visibility: newPost.visibility,
       };
 
       await addDoc(collection(db, 'posts'), post);
       setIsNewPostOpen(false);
-      setNewPost({ content: '', diaryContent: '', image: null, entryDate: null, visibility: 'public' });
-      setSelectedFile(null);
+      resetNewPostState();
       loadPosts();
     } catch (error) {
       console.error('게시물 저장 중 오류 발생:', error);
       alert(`게시물 저장에 실패했습니다: ${error.message}`);
     }
+  };
+
+  const handleDeletePost = async (postId) => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    try {
+      const postDocRef = doc(db, 'posts', postId);
+      const postDocSnap = await getDoc(postDocRef);
+      if (postDocSnap.exists() && postDocSnap.data().userId === currentUser.uid) {
+        await deleteDoc(postDocRef);
+        alert('게시물이 삭제되었습니다.');
+        loadPosts();
+      } else {
+        alert('해당 게시물을 삭제할 권한이 없습니다.');
+      }
+    } catch (error) {
+      console.error('게시물 삭제 중 오류 발생:', error);
+      alert('게시물 삭제에 실패했습니다.');
+    }
+  };
+
+  const resetNewPostState = () => {
+    setNewPost({ content: '', diaryContent: '', image: null, entryDate: null, visibility: 'public' });
+    setSelectedFile(null);
+  };
+
+  const handleDialogClose = () => {
+    setIsNewPostOpen(false);
+    resetNewPostState();
   };
 
   return (
@@ -181,7 +209,13 @@ function Community({ sidebarVisible }) {
       ) : posts.length > 0 ? (
         <div className="posts-container">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} refreshPosts={loadPosts} currentUser={auth.currentUser} />
+            <PostCard 
+              key={post.id} 
+              post={post} 
+              refreshPosts={loadPosts} 
+              currentUser={auth.currentUser} 
+              onDeletePost={handleDeletePost} // 삭제 기능 추가
+            />
           ))}
         </div>
       ) : (
@@ -190,7 +224,7 @@ function Community({ sidebarVisible }) {
       <button className="new-post-button" onClick={() => setIsNewPostOpen(true)}>
         <PlusCircle size={24} />
       </button>
-      <Dialog open={isNewPostOpen} onClose={() => setIsNewPostOpen(false)}>
+      <Dialog open={isNewPostOpen} onClose={handleDialogClose}>
         <DialogTitle>새 게시물 작성</DialogTitle>
         <DialogContent>
           <Button onClick={() => setIsDatePickerOpen(true)} variant="outlined" style={{ marginBottom: '10px' }}>
@@ -232,7 +266,7 @@ function Community({ sidebarVisible }) {
           {newPost.image && <img src={newPost.image} alt="Selected" style={{ maxWidth: '100%', marginTop: '10px' }} />}
           <Select
             value={newPost.visibility}
-            onChange={(e) => setNewPost({...newPost, visibility: e.target.value})}
+            onChange={(e) => setNewPost({ ...newPost, visibility: e.target.value })}
             fullWidth
             margin="normal"
           >
@@ -241,7 +275,7 @@ function Community({ sidebarVisible }) {
           </Select>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsNewPostOpen(false)}>취소</Button>
+          <Button onClick={handleDialogClose}>취소</Button>
           <Button onClick={handleNewPost} variant="contained" color="primary">게시하기</Button>
         </DialogActions>
       </Dialog>
