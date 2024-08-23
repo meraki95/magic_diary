@@ -207,9 +207,9 @@ function Home({ toggleSidebar }) {
       {recentDiary && (
         <div className="section">
           <h2>최근 활동</h2>
-          <div className="recent-activity">
+          <div className="highlight-box">
             <p>{recentDiary.content.substring(0, 50)}...</p>
-            <p>작성 날짜: {recentDiary.createdAt.toLocaleDateString()}</p>
+            <p className="date">작성 날짜: {recentDiary.createdAt.toLocaleDateString()}</p>
           </div>
         </div>
       )}
