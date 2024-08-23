@@ -170,7 +170,7 @@ app.post('/api/generate-image', async (req, res) => {
       width: 1024,
       height: 1024,
       negative_prompt: "people, person, human, character, face, body, hands, feet, text, words, letters, typography, font, signage, symbols, figures, silhouettes, cartoon, anime, illustration, painting, drawing, artificial, unrealistic",
-      modelId: "1aa0bd4e-6e00-4762-a6c7-ee056483f54d", // 더욱 사실적인 이미지를 위한 Leonardo Creative 모델
+      modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // 더욱 사실적인 이미지를 위한 Leonardo Creative 모델
       num_images: 1,
       promptMagic: true, // 프롬프트 매직 활성화
       highContrast: true, // 고대비 설정 활성화
