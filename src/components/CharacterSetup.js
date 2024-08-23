@@ -112,6 +112,10 @@ function CharacterSetup() {
     }
   };
 
+  const handleAddProfile = () => {
+    setProfiles([...profiles, { name: `인물 ${profiles.length + 1}`, image: null }]);
+  };
+
   if (isLoading) {
     return <div>로딩 중...</div>;
   }
@@ -147,6 +151,7 @@ function CharacterSetup() {
           </div>
         ))}
       </div>
+      <button onClick={handleAddProfile} className="add-button">추가하기</button>
       <button onClick={handleSave} className="save-button">설정 저장</button>
     </div>
   );
