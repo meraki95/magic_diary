@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useNavigate } from 'react-router-dom';
 import '../styles/CharacterSetup.css';
 
 function CharacterSetup() {
   const [profiles, setProfiles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadCharacters = async () => {
@@ -25,28 +27,13 @@ function CharacterSetup() {
 
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data();
-          setProfiles(userData.characters || [
-            { name: '인물 1', image: null },
-            { name: '인물 2', image: null },
-            { name: '인물 3', image: null },
-            { name: '인물 4', image: null },
-          ]);
+          setProfiles(userData.characters || getDefaultProfiles());
         } else {
-          setProfiles([
-            { name: '인물 1', image: null },
-            { name: '인물 2', image: null },
-            { name: '인물 3', image: null },
-            { name: '인물 4', image: null },
-          ]);
+          setProfiles(getDefaultProfiles());
         }
       } catch (error) {
         console.error('캐릭터 설정 불러오기 실패:', error);
-        setProfiles([
-          { name: '인물 1', image: null },
-          { name: '인물 2', image: null },
-          { name: '인물 3', image: null },
-          { name: '인물 4', image: null },
-        ]);
+        setProfiles(getDefaultProfiles());
       } finally {
         setIsLoading(false);
       }
@@ -54,6 +41,13 @@ function CharacterSetup() {
 
     loadCharacters();
   }, []);
+
+  const getDefaultProfiles = () => [
+    { name: '인물 1', image: null },
+    { name: '인물 2', image: null },
+    { name: '인물 3', image: null },
+    { name: '인물 4', image: null },
+  ];
 
   const handleImageUpload = async (index, file) => {
     const storage = getStorage();
@@ -89,9 +83,18 @@ function CharacterSetup() {
 
       await setDoc(userDocRef, { characters: profiles }, { merge: true });
       alert('캐릭터 설정이 저장되었습니다.');
+      navigate('/home');
     } catch (error) {
       console.error('캐릭터 설정 저장 실패:', error);
       alert('캐릭터 설정 저장에 실패했습니다.');
+    }
+  };
+
+  const handleInputFocus = (index) => {
+    if (profiles[index].name.startsWith('인물 ')) {
+      const updatedProfiles = [...profiles];
+      updatedProfiles[index].name = '';
+      setProfiles(updatedProfiles);
     }
   };
 
@@ -114,6 +117,7 @@ function CharacterSetup() {
               type="text"
               value={profile.name}
               onChange={(e) => handleNameChange(index, e.target.value)}
+              onFocus={() => handleInputFocus(index)}
               className="name-input"
             />
             <input
