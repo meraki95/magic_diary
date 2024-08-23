@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, updateDoc, doc, arrayUnion, arrayRemove, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
-import { Heart, MessageCircle, Share, ArrowUp, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, Share, ArrowUp, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Select, MenuItem } from '@mui/material';
 import '../styles/PostCard.css';
+
 
 function PostCard({ post, refreshPosts, currentUser }) {
   const [liked, setLiked] = useState(false);
@@ -14,6 +15,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
   const [isLoading, setIsLoading] = useState(true);
   const [showFriendAction, setShowFriendAction] = useState(false);
   const [visibility, setVisibility] = useState(post.visibility);
+  const [showDiaryContent, setShowDiaryContent] = useState(false);
   const db = getFirestore();
   const navigate = useNavigate();
 
@@ -252,9 +254,21 @@ function PostCard({ post, refreshPosts, currentUser }) {
         <span className="username">{post.username || '익명'}</span> {post.content || '내용 없음'}
       </div>
       {post.diaryContent && (
+            <div className="diary-section">
+            <button 
+              className="diary-toggle"
+              onClick={() => setShowDiaryContent(!showDiaryContent)}
+            >
+              {showDiaryContent ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              일기 내용 {showDiaryContent ? '숨기기' : '보기'}
+            </button>
+            {showDiaryContent && (
+        
         <div className="post-diary-content">
           <strong>일기 내용:</strong> {post.diaryContent}
         </div>
+      )}
+      </div>
       )}
       {showComments && (
         <div className="comments-section">

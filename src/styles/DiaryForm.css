@@ -140,8 +140,8 @@ form.diary-form button.generate-button:hover {
 
 @media (max-width: 768px) {
   .diary-form-container {
-    width: calc(100% - 40px);
-    margin: 10px 20px;
+    width: calc(100% - 30px);
+    margin: 10px 15px;
     padding: 15px;
   }
 
@@ -155,7 +155,13 @@ form.diary-form button.generate-button:hover {
     font-size: 12px;
   }
 
+  form.diary-form {
+    width: calc(100% - 20px);
+    margin: 0 10px;
+  }
+
   form.diary-form textarea {
+    width: 100%;
     height: 120px;
     font-size: 14px;
     padding: 12px;
@@ -164,6 +170,7 @@ form.diary-form button.generate-button:hover {
   form.diary-form button.generate-button {
     padding: 10px 20px;
     font-size: 16px;
+    width: 100%;
   }
 
   .date-picker input[type="date"] {
