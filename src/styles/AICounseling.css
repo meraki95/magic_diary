@@ -4,141 +4,147 @@
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  padding: 20px;
-  background-color: #2E2E3A;
-  border-radius: 10px;
-  color: #E5E5E5;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+  color: #333;
   min-height: 100vh;
-  padding-top: 80px;
-  margin-left: 0;
-  transition: margin-left 0.3s ease;
-}
-
-.sidebar-visible .ai-counseling-container {
-  margin-left: 250px;
+  transition: all 0.3s ease;
 }
 
 .counseling-info {
-  background-color: #1A1A2E;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 30px;
   max-width: 600px;
   width: 100%;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .diary-count {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
-  color: #FFD700;
+  color: #6C63FF;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .warning-message {
-  background-color: #3A3A4F;
+  background: rgba(255, 255, 255, 0.3);
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 15px;
   margin-top: 20px;
   max-width: 600px;
   width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .analyze-button {
-  background-color: #4A4A5A;
-  color: #E5E5E5;
+  background: linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+  color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 5px;
+  padding: 15px 30px;
+  border-radius: 30px;
   cursor: pointer;
   font-size: 18px;
-  margin-top: 20px;
-  transition: background-color 0.3s ease;
+  margin-top: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .analyze-button:hover {
-  background-color: #5A5A6A;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .analyze-button:disabled {
-  background-color: #3A3A4F;
+  background: #ccc;
   cursor: not-allowed;
 }
 
 .analysis-result {
-  background-color: #1A1A2E;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 20px;
+  margin-top: 30px;
   text-align: left;
   max-width: 800px;
   width: 100%;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .analysis-result h3 {
-  color: #FFD700;
-  margin-bottom: 15px;
+  color: #6C63FF;
+  margin-bottom: 20px;
   font-size: 24px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .result-item {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.8;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
 }
 
 .result-item strong {
-  color: #FFD700;
+  color: #6C63FF;
 }
 
 .advice-box {
-  background-color: #3A3A4F;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 25px;
+  border-radius: 20px;
+  margin-top: 30px;
   position: relative;
   overflow: visible;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
 }
 
 .advice-box::before {
   content: '';
   position: absolute;
-  top: -10px;
-  left: 20px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #3A3A4F;
+  top: -15px;
+  left: 30px;
+  width: 30px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(45deg);
 }
 
 .advice-box h4 {
-  color: #FFD700;
-  margin-bottom: 10px;
-  font-size: 20px;
+  color: #6C63FF;
+  margin-bottom: 15px;
+  font-size: 22px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .error-message {
   color: #FF6347;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255, 99, 71, 0.1);
+  border-radius: 10px;
 }
 
 @media (max-width: 768px) {
   .ai-counseling-container {
-    padding: 10px;
-    padding-top: 60px;
-  }
-
-  .sidebar-visible .ai-counseling-container {
-    margin-left: 0;
+    padding: 20px;
   }
 
   .analyze-button {
     font-size: 16px;
-    padding: 10px 20px;
+    padding: 12px 24px;
   }
 
   .analysis-result, .advice-box {
-    padding: 15px;
+    padding: 20px;
   }
 
   .analysis-result h3 {

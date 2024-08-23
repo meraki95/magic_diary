@@ -1,21 +1,19 @@
 .diary-form-container {
-  padding: 20px;
-  background-color: #2E2E3A;
-  border-radius: 10px;
-  color: #E5E5E5;
-  max-width: 600px;
-  margin: 0 auto;
+  padding: 30px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 15px;
+  color: #333;
+  max-width: 700px;
+  margin: 20px auto;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  justify-content: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #4a4a4a;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 form {
@@ -30,66 +28,126 @@ form {
   height: 200px;
   padding: 15px;
   border-radius: 10px;
-  border: none;
+  border: 2px solid #c3cfe2;
   font-size: 16px;
-  background-color: #1A1A2E;
-  color: #E5E5E5;
+  background-color: #fff;
+  color: #333;
   resize: vertical;
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.diary-textarea:focus {
+  border-color: #6C63FF;
+  box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
 }
 
 .generate-button {
   padding: 15px 30px;
-  background-color: #4B48E0;
+  background: linear-gradient(45deg, #6C63FF, #4B48E0);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 25px;
   cursor: pointer;
   font-size: 18px;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .generate-button:hover {
-  background-color: #6C63FF;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.generate-button:active {
+  transform: translateY(1px);
 }
 
 .style-buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 20px;
-  gap: 15px;
+  margin-bottom: 25px;
+  gap: 12px;
 }
 
 .style-button {
-  padding: 12px 20px;
+  padding: 10px 20px;
   cursor: pointer;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   transition: all 0.3s ease;
-  font-size: 16px;
+  font-size: 14px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .style-button.selected {
-  transform: scale(1.1);
-  box-shadow: 0 0 10px rgba(255,255,255,0.5);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(108, 99, 255, 0.5);
 }
 
 .loading-spinner {
   text-align: center;
   margin-top: 20px;
   font-weight: bold;
-  color: #E5E5E5;
+  color: #4a4a4a;
+}
+
+.date-picker {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.date-picker input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+  border: 2px solid #c3cfe2;
+  font-size: 16px;
+  text-align: center;
+  background-color: #fff;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.date-picker input:focus {
+  border-color: #6C63FF;
+  box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
+}
+
+/* 마법적인 효과 */
+@keyframes sparkle {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.diary-form-container::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff00ee, #00ff00, #00ffff, #ff00ff);
+  z-index: -1;
+  filter: blur(10px);
+  background-size: 400% 400%;
+  animation: sparkle 15s ease infinite;
+  opacity: 0.7;
+  border-radius: 16px;
 }
 
 @media (max-width: 768px) {
   .diary-form-container {
-    padding: 15px;
+    padding: 20px;
+    margin: 10px;
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .diary-textarea {
@@ -103,7 +161,7 @@ form {
   }
 
   .style-button {
-    padding: 10px 15px;
-    font-size: 14px;
+    padding: 8px 15px;
+    font-size: 12px;
   }
 }

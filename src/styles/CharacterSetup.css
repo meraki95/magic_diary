@@ -4,27 +4,21 @@
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  padding: 20px;
-  background-color: #2E2E3A;
-  border-radius: 10px;
-  color: #E5E5E5;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: #ffffff;
   min-height: 100vh;
   padding-top: 80px;
-  margin-left: 0; /* 기본 마진 제거 */
-  transition: margin-left 0.3s ease; /* 부드러운 전환 효과 */
-}
-
-.sidebar-visible .character-setup-container {
-  margin-left: 250px; /* 사이드바가 보일 때만 마진 적용 */
+  transition: all 0.3s ease;
 }
 
 .character-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 사진을 가로로 4개 배치 */
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
   width: 100%;
-  max-width: 1500px;
-  margin-top: 20px;
+  max-width: 1200px;
+  margin-top: 40px;
 }
 
 .character-item {
@@ -32,135 +26,128 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background-color: #1A1A2E;
+  background: rgba(255, 255, 255, 0.1);
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.character-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
 }
 
 .character-item img {
   width: 100%;
   height: auto;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .character-placeholder {
   width: 150px;
   height: 150px;
-  background-color: #3A3A4F;
+  background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #E5E5E5;
+  color: #ffffff;
   border-radius: 10px;
-  margin-bottom: 10px;
-  margin-left: -20px; /* 원하는 위치로 이동 */
+  margin-bottom: 15px;
+  font-size: 24px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .file-upload-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 20px;
-  position: relative; /* 위치 설정 가능하게 함 */
-  left: 30px; /* 전체 컨테이너를 오른쪽으로 이동 */
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
 }
 
 input[type="file"] {
+  display: none;
+}
+
+.file-upload-label {
+  background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 25px;
   cursor: pointer;
-  margin-top: 10px;
-  position: relative;
-  left: 20px; /* 파일 선택 버튼 자체를 오른쪽으로 이동 */
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.file-upload-label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .file-upload-container span {
-  position: relative;
-  left: 20px; /* "선택된 파일 없음" 텍스트를 더 오른쪽으로 이동 */
-  margin-top: 5px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .character-item p {
   font-size: 18px;
   margin: 10px 0;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.upload-input {
-  margin-top: 10px;
-}
-
-.upload-input[type="file"] {
-  display: block;
-  margin: 0 auto;
-  cursor: pointer;
-  color: #E5E5E5;
-}
-
-/* 반응형 디자인 */
 @media (max-width: 1024px) {
   .character-grid {
-    grid-template-columns: repeat(3, 1fr); /* 태블릿 크기에서는 가로 3개 배치 */
-    gap: 15px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
 }
 
 @media (max-width: 768px) {
   .character-setup-container {
-    padding: 10px; /* 모바일에서는 패딩을 줄여 화면 공간 활용 */
-    margin-left: 0; /* 모바일에서는 사이드바가 보여도 마진 없음 */
-    padding-top: 60px; /* 상단 패딩을 줄여서 더 많은 공간 확보 */
+    padding: 20px;
+    padding-top: 60px;
   }
 
   .character-grid {
-    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 가로 2개 배치 */
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
 
   .character-item {
-    padding: 15px; /* 모바일에서는 내부 패딩을 줄임 */
+    padding: 15px;
   }
 
   .character-item p {
-    font-size: 16px; /* 모바일에서 글자 크기 조정 */
+    font-size: 16px;
   }
 
   .character-placeholder {
     width: 120px;
-    height: 120px; /* 모바일에서 크기 조정 */
-    margin-left: 0; /* 모바일에서는 중앙 배치 */
-  }
-
-  .file-upload-container {
-    left: 0; /* 모바일에서는 위치 초기화 */
-    align-items: center;
-  }
-
-  input[type="file"] {
-    left: 0; /* 모바일에서 위치 초기화 */
-    margin: 0;
-  }
-
-  .file-upload-container span {
-    left: 0; /* 모바일에서 위치 초기화 */
-    margin-top: 5px;
+    height: 120px;
+    font-size: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .character-grid {
-    grid-template-columns: 1fr; /* 작은 화면에서는 가로 1개 배치 */
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .character-item {
-    padding: 10px; /* 작은 화면에서는 패딩을 더 줄임 */
-  }
-
-  .character-item p {
-    font-size: 14px; /* 작은 화면에서는 더 작은 글자 크기 */
+    padding: 20px;
   }
 
   .character-placeholder {
-    width: 100px;
-    height: 100px; /* 작은 화면에서 크기 조정 */
+    width: 150px;
+    height: 150px;
   }
 }
