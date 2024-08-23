@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, updateDoc, doc, arrayUnion, arrayRemove, getDoc, setDoc } from 'firebase/firestore';
-import { Heart, MessageCircle, Share, ArrowUp } from 'lucide-react';
+import { getFirestore, updateDoc, doc, arrayUnion, arrayRemove, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { Heart, MessageCircle, Share, ArrowUp, Trash2 } from 'lucide-react';
 import { Select, MenuItem } from '@mui/material';
 import '../styles/PostCard.css';
 
@@ -129,6 +129,26 @@ function PostCard({ post, refreshPosts, currentUser }) {
     }
   };
 
+  const handleDelete = async () => {
+    if (!currentUser || !post) {
+      alert('로그인이 필요하거나 게시물 정보가 없습니다.');
+      return;
+    }
+
+    const confirmed = window.confirm('정말로 이 게시물을 삭제하시겠습니까?');
+    if (!confirmed) return;
+
+    try {
+      const postRef = doc(db, 'posts', post.id);
+      await deleteDoc(postRef);
+      alert('게시물이 삭제되었습니다.');
+      refreshPosts(); // 삭제 후 게시물 목록을 새로고침합니다.
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('게시물 삭제에 실패했습니다.');
+    }
+  };
+
   const handleShare = () => {
     if (window.Kakao && window.Kakao.Link && post) {
       window.Kakao.Link.sendDefault({
@@ -197,14 +217,21 @@ function PostCard({ post, refreshPosts, currentUser }) {
           </>
         )}
         {currentUser && currentUser.uid === post.userId && (
-          <Select
-            value={visibility}
-            onChange={handleVisibilityChange}
-            className="visibility-select"
-          >
-            <MenuItem value="public">전체 공개</MenuItem>
-            <MenuItem value="friends">친구 공개</MenuItem>
-          </Select>
+          <>
+            <Select
+              value={visibility}
+              onChange={handleVisibilityChange}
+              className="visibility-select"
+            >
+              <MenuItem value="public">전체 공개</MenuItem>
+              <MenuItem value="friends">친구 공개</MenuItem>
+            </Select>
+            {/* 삭제 버튼 추가 */}
+            <button className="delete-button" onClick={handleDelete}>
+              <Trash2 size={18} />
+              삭제
+            </button>
+          </>
         )}
       </div>
       {post.image && <img src={post.image} alt="Post" className="post-image" />}

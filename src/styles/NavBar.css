@@ -1,17 +1,18 @@
 .navbar {
   position: fixed;
   top: 0;
-  left: -240px;
+  left: 0;
   width: 250px;
   height: 100vh;
   background-color: #ffffff;
   border-right: 1px solid #dbdbdb;
-  transition: left 0.3s ease;
+  transform: translateX(-100%); /* 처음에 화면 밖에 숨겨둡니다 */
+  transition: transform 0.3s ease;
   z-index: 1001;
 }
 
 .navbar.visible {
-  left: 0;
+  transform: translateX(0); /* 보일 때 화면 안으로 슬라이드합니다 */
 }
 
 .sidebar-toggle {
@@ -73,11 +74,11 @@ li {
 @media (max-width: 768px) {
   .navbar {
     width: 100%;
-    left: -100%;
+    transform: translateX(-100%);
   }
 
   .navbar.visible {
-    left: 0;
+    transform: translateX(0);
   }
 
   .sidebar-toggle {
