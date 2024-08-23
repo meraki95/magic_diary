@@ -1,6 +1,13 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
 .App {
   display: flex;
-  height: 100vh;
   min-height: 100vh;
   transition: all 0.3s ease;
 }
@@ -8,7 +15,7 @@
 .content {
   flex-grow: 1;
   padding: 20px;
-  background-color: #2E2E3A;
+  background-color: #f5f5f5;
   overflow-y: auto;
   min-width: 300px;
   transition: margin-left 0.3s ease;
@@ -20,6 +27,77 @@
 
 .sidebar-hidden .content {
   margin-left: 0;
+}
+
+/* NavBar 스타일 */
+.navbar {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 버튼 공통 스타일 */
+button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+/* 카드 공통 스타일 */
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* 입력 필드 공통 스타일 */
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* 마법적인 효과 */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.magical-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.magical-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 6s infinite;
 }
 
 /* 반응형 디자인 */
