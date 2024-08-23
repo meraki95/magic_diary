@@ -1,18 +1,20 @@
 .diary-selection-container {
-  padding: 20px;
-  background-color: #2E2E3A;
-  border-radius: 10px;
-  color: #E5E5E5;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  color: #ffffff;
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 700px;
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .diary-options {
@@ -23,62 +25,58 @@ h2 {
 }
 
 .diary-option {
-  background-color: #3A3A4F;
-  padding: 15px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 15px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .diary-option.selected {
-  background-color: #6C63FF;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .diary-option:hover {
-  background-color: #444460;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
 }
 
 .diary-actions {
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 15px;
 }
 
-.submit-button {
-  background-color: #4B48E0;
+.submit-button, .regenerate-button {
+  background: linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
   color: white;
-  padding: 12px 20px;
+  padding: 15px 25px;
   border: none;
-  border-radius: 5px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 20px;  /* 버튼 아래에 마진 추가 */
+  font-size: 18px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.regenerate-button {
-  background-color: #4B48E0;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
- /*  margin-top: 10px;  버튼 위에 마진 추가 */
-}
-
-.submit-button:hover,
-.regenerate-button:hover {
-  background-color: #6C63FF;
+.submit-button:hover, .regenerate-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {
   .diary-selection-container {
-    padding: 15px;
+    padding: 30px 15px;
   }
 
   h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
+    font-size: 24px;
+    margin-bottom: 25px;
   }
 
   .diary-options {
@@ -87,13 +85,12 @@ h2 {
   }
 
   .diary-option {
-    padding: 12px;
+    padding: 15px;
     font-size: 14px;
   }
 
-  .submit-button,
-  .regenerate-button {
-    padding: 10px 16px;
-    font-size: 14px;
+  .submit-button, .regenerate-button {
+    padding: 12px 20px;
+    font-size: 16px;
   }
 }
