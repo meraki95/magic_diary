@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getFirestore, doc, getDoc, addDoc, collection } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, addDoc, collection, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 import { Rnd } from 'react-rnd';
@@ -21,10 +21,13 @@ function DiaryImageGeneration() {
   const [isAdjusting, setIsAdjusting] = useState(false);
   const [remainingRefreshes, setRemainingRefreshes] = useState(3);
   const isFirstRender = useRef(true);
+  const [editableDiary, setEditableDiary] = useState(selectedDiary);
+  const [isEditing, setIsEditing] = useState(false);
+
   useEffect(() => {
     console.log('Adjusted characters:', adjustedCharacters);
   }, [adjustedCharacters]);
-
+  
   const loadCharacters = useCallback(async () => {
     console.log("Loading characters...");
     try {
@@ -68,8 +71,8 @@ function DiaryImageGeneration() {
         ...char,
         x: 0,
         y: 0,
-        width: 100,
-        height: 100,
+        width: 50,
+        height: 50,
         opacity: 1
       })));
       
@@ -101,28 +104,48 @@ function DiaryImageGeneration() {
   }, [selectedDiary, navigate, loadCharacters, generateImage]);
 
   const handleDrag = (index, e, ui) => {
-  console.log('Dragging:', { index, x: ui.x, y: ui.y });
-  setAdjustedCharacters(prevChars => prevChars.map((char, i) => 
-    i === index ? { ...char, x: ui.x, y: ui.y } : char
-  ));
-};
+    console.log('Dragging:', { index, x: ui.x, y: ui.y });
+    setAdjustedCharacters(prevChars => prevChars.map((char, i) => 
+      i === index ? { ...char, x: ui.x, y: ui.y } : char
+    ));
+  };
 
   const handleResize = (index, e, direction, ref, delta, position) => {
     console.log('Resizing:', { index, width: ref.offsetWidth, height: ref.offsetHeight, x: position.x, y: position.y });
-    setAdjustedCharacters(mentionedCharacters.map(char => ({
-      ...char,
-      x: 0,
-      y: 0,
-      width: 50,  // 100에서 50으로 변경
-      height: 50, // 100에서 50으로 변경
-      opacity: 1
-    })));
+    setAdjustedCharacters(prevChars => prevChars.map((char, i) => 
+      i === index ? {
+        ...char,
+        width: Math.round(ref.offsetWidth),
+        height: Math.round(ref.offsetHeight),
+        x: Math.round(position.x),
+        y: Math.round(position.y)
+      } : char
+    ));
   };
 
   const handleOpacityChange = (index, value) => {
     const updatedCharacters = [...adjustedCharacters];
     updatedCharacters[index].opacity = value;
     setAdjustedCharacters(updatedCharacters);
+  };
+
+  const handleDiaryEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleDiarySave = async () => {
+    setIsEditing(false);
+    try {
+      const auth = getAuth();
+      const db = getFirestore();
+      await updateDoc(doc(db, 'diaries', savedDiaryId), {
+        content: editableDiary
+      });
+      alert('일기가 성공적으로 수정되었습니다.');
+    } catch (error) {
+      console.error('일기 수정 오류:', error);
+      alert('일기 수정에 실패했습니다.');
+    }
   };
 
   const handleSave = async () => {
@@ -159,7 +182,7 @@ function DiaryImageGeneration() {
       const downloadUrl = await getDownloadURL(imageRef);
 
       const diaryData = {
-        content: selectedDiary,
+        content: editableDiary,
         imageUrl: downloadUrl,
         userInput: userInput || '',
         userId: auth.currentUser.uid,
@@ -209,19 +232,20 @@ function DiaryImageGeneration() {
     return (
       <div className="image-adjustment-container">
         <div className="background-image" style={{
-         backgroundImage: `url(${generatedImage})`,
-         position: 'relative',
-         width: '512px',
-         height: '512px',
-         backgroundSize: 'cover',
-         backgroundPosition: 'center'}}>
-            {adjustedCharacters.map((char, index) => (
+          backgroundImage: `url(${generatedImage})`,
+          position: 'relative',
+          width: '512px',
+          height: '512px',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
+          {adjustedCharacters.map((char, index) => (
             <Rnd
-            key={index}
-            size={{ width: char.width, height: char.height }}
-            position={{ x: char.x, y: char.y }}
-            onDragStop={(e, d) => handleDrag(index, e, d)}
-            onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
+              key={index}
+              size={{ width: char.width, height: char.height }}
+              position={{ x: char.x, y: char.y }}
+              onDragStop={(e, d) => handleDrag(index, e, d)}
+              onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
               bounds="parent"
               minWidth={50}
               minHeight={50}
@@ -247,7 +271,9 @@ function DiaryImageGeneration() {
                   opacity: char.opacity,
                   width: '100%',
                   height: '100%',
-                  objectFit: 'contain'
+                  objectFit: 'contain',
+                  maxWidth: '150px',
+                  maxHeight: '150px'
                 }}
               />
             </Rnd>
@@ -285,7 +311,20 @@ function DiaryImageGeneration() {
             <img src={compositedImage} alt="Composited diary image" className="saved-image" />
             <div className="saved-diary-content">
               <h3>오늘의 일기</h3>
-              <p>{selectedDiary}</p>
+              {isEditing ? (
+                <textarea
+                  value={editableDiary}
+                  onChange={(e) => setEditableDiary(e.target.value)}
+                  style={{ width: '100%', minHeight: '200px' }}
+                />
+              ) : (
+                <p>{editableDiary}</p>
+              )}
+              {isEditing ? (
+                <button onClick={handleDiarySave} className="action-button">저장</button>
+              ) : (
+                <button onClick={handleDiaryEdit} className="action-button">수정</button>
+              )}
             </div>
             <div className="button-container">
               <button onClick={() => navigate('/home')} className="action-button">
