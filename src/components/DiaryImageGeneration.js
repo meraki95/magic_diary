@@ -109,15 +109,14 @@ function DiaryImageGeneration() {
 
   const handleResize = (index, e, direction, ref, delta, position) => {
     console.log('Resizing:', { index, width: ref.offsetWidth, height: ref.offsetHeight, x: position.x, y: position.y });
-    setAdjustedCharacters(prevChars => prevChars.map((char, i) => 
-      i === index ? {
-        ...char,
-        width: Math.round(ref.offsetWidth),
-        height: Math.round(ref.offsetHeight),
-        x: Math.round(position.x),
-        y: Math.round(position.y)
-      } : char
-    ));
+    setAdjustedCharacters(mentionedCharacters.map(char => ({
+      ...char,
+      x: 0,
+      y: 0,
+      width: 50,  // 100에서 50으로 변경
+      height: 50, // 100에서 50으로 변경
+      opacity: 1
+    })));
   };
 
   const handleOpacityChange = (index, value) => {
@@ -209,7 +208,13 @@ function DiaryImageGeneration() {
   if (isAdjusting) {
     return (
       <div className="image-adjustment-container">
-        <div className="background-image" style={{backgroundImage: `url(${generatedImage})`, position: 'relative', width: '100%', height: '600px'}}>
+        <div className="background-image" style={{
+         backgroundImage: `url(${generatedImage})`,
+         position: 'relative',
+         width: '512px',
+         height: '512px',
+         backgroundSize: 'cover',
+         backgroundPosition: 'center'}}>
             {adjustedCharacters.map((char, index) => (
             <Rnd
             key={index}
