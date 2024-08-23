@@ -21,6 +21,9 @@ function DiaryImageGeneration() {
   const [isAdjusting, setIsAdjusting] = useState(false);
   const [remainingRefreshes, setRemainingRefreshes] = useState(3);
   const isFirstRender = useRef(true);
+  useEffect(() => {
+    console.log('Adjusted characters:', adjustedCharacters);
+  }, [adjustedCharacters]);
 
   const loadCharacters = useCallback(async () => {
     console.log("Loading characters...");
@@ -98,9 +101,9 @@ function DiaryImageGeneration() {
   }, [selectedDiary, navigate, loadCharacters, generateImage]);
 
   const handleDrag = (index, e, ui) => {
-    console.log('Dragging:', { index, x: d.x, y: d.y });
+  console.log('Dragging:', { index, x: ui.x, y: ui.y });
   setAdjustedCharacters(prevChars => prevChars.map((char, i) => 
-    i === index ? { ...char, x: d.x, y: d.y } : char
+    i === index ? { ...char, x: ui.x, y: ui.y } : char
   ));
 };
 
@@ -209,11 +212,11 @@ function DiaryImageGeneration() {
         <div className="background-image" style={{backgroundImage: `url(${generatedImage})`, position: 'relative', width: '100%', height: '600px'}}>
             {adjustedCharacters.map((char, index) => (
             <Rnd
-              key={index}
-              size={{ width: char.width, height: char.height }}
-              position={{ x: char.x, y: char.y }}
-              onDragStop={(e, d) => handleDrag(index, e, d)}
-              onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
+            key={index}
+            size={{ width: char.width, height: char.height }}
+            position={{ x: char.x, y: char.y }}
+            onDragStop={(e, d) => handleDrag(index, e, d)}
+            onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
               bounds="parent"
               minWidth={50}
               minHeight={50}
