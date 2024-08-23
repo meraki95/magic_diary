@@ -16,20 +16,29 @@ function AICounseling() {
 
   const fetchDiaryCount = async () => {
     setIsLoading(true);
+    setError("");
     try {
       const auth = getAuth();
       const user = auth.currentUser;
       if (user) {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/diary-count/${user.uid}`,{
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diary-count/${user.uid}`, {
           timeout: 10000
         });
         setDiaryCount(response.data.count);
       }
     } catch (error) {
       console.error("일기 개수 조회 오류:", error);
-      setError("일기 개수를 불러오는데 실패했습니다.");
-    }
-    finally {
+      if (error.response) {
+        // 서버가 2xx 범위를 벗어난 상태 코드로 응답한 경우
+        setError(`서버 오류: ${error.response.status}`);
+      } else if (error.request) {
+        // 요청이 이루어졌으나 응답을 받지 못한 경우
+        setError("서버에서 응답이 없습니다. 네트워크 연결을 확인해주세요.");
+      } else {
+        // 요청을 설정하는 중에 문제가 발생한 경우
+        setError("요청 설정 중 오류가 발생했습니다.");
+      }
+    } finally {
       setIsLoading(false);
     }
   };
@@ -55,8 +64,14 @@ function AICounseling() {
         setAdvice(response.data.advice);
       }
     } catch (error) {
-      console.error("AI 상담 요청 오류:", error.response?.data?.message || error.message);
-      setError(error.response?.data?.message || "AI 상담 중 오류가 발생했습니다.");
+      console.error("AI 상담 요청 오류:", error);
+      if (error.response) {
+        setError(`서버 오류: ${error.response.status} - ${error.response.data.message || '알 수 없는 오류'}`);
+      } else if (error.request) {
+        setError("서버에서 응답이 없습니다. 네트워크 연결을 확인해주세요.");
+      } else {
+        setError("요청 설정 중 오류가 발생했습니다.");
+      }
     } finally {
       setIsLoading(false);
     }
