@@ -137,9 +137,13 @@ function CharacterSetup() {
             />
             <input
               type="file"
+              id={`file-upload-${index}`}
               onChange={(e) => handleImageUpload(index, e.target.files[0])}
               className="upload-input"
             />
+            <label htmlFor={`file-upload-${index}`} className="file-upload-label">
+              사진 업로드
+            </label>
           </div>
         ))}
       </div>
