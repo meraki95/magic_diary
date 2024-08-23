@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { auth } from '../firebaseConfig';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithCustomToken } from 'firebase/auth';
 import axios from 'axios';
+import LoadingSpinner from './LoadingSpinner';
 import '../styles/Login.css';
 
 function Login() {
