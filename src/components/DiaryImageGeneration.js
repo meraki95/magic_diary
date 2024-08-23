@@ -27,7 +27,7 @@ function DiaryImageGeneration() {
   useEffect(() => {
     console.log('Adjusted characters:', adjustedCharacters);
   }, [adjustedCharacters]);
-  
+
   const loadCharacters = useCallback(async () => {
     console.log("Loading characters...");
     try {
@@ -63,14 +63,18 @@ function DiaryImageGeneration() {
       console.log("Background Image URL:", backgroundImageUrl);
       setGeneratedImage(backgroundImageUrl);
       
+      const backgroundWidth = 512; // 배경 이미지의 너비
+      const backgroundHeight = 512; // 배경 이미지의 높이
+
       const mentionedCharacters = loadedCharacters.filter(char => 
         selectedDiary.toLowerCase().includes(char.name.toLowerCase()) && char.image
       );
-      
+
       setAdjustedCharacters(mentionedCharacters.map(char => ({
         ...char,
-        x: 0,
-        y: 0,
+        // 캐릭터를 배경의 가운데에 배치하기 위한 초기 x, y 값 설정
+        x: (backgroundWidth - 50) / 2, // 50은 캐릭터 이미지의 초기 너비
+        y: (backgroundHeight - 50) / 2, // 50은 캐릭터 이미지의 초기 높이
         width: 50,
         height: 50,
         opacity: 1
@@ -217,7 +221,7 @@ function DiaryImageGeneration() {
   const handleProceedToAdjustment = () => {
     setIsAdjusting(true);
   };
-  
+
   if (isLoading) {
     return (
       <div className="loading-spinner-container">
@@ -227,7 +231,7 @@ function DiaryImageGeneration() {
       </div>
     );
   }
-  
+
   if (isAdjusting) {
     return (
       <div className="image-adjustment-container">
