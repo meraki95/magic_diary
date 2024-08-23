@@ -7,11 +7,10 @@ import { getAuth } from 'firebase/auth';
 import { Rnd } from 'react-rnd';
 import '../styles/DiaryImageGeneration.css';
 
-
 function DiaryImageGeneration() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { selectedDiary, userInput,selectedDate } = location.state || {};
+  const { selectedDiary, userInput, selectedDate } = location.state || {};
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
@@ -22,18 +21,6 @@ function DiaryImageGeneration() {
   const [isAdjusting, setIsAdjusting] = useState(false);
   const [remainingRefreshes, setRemainingRefreshes] = useState(3);
   const isFirstRender = useRef(true);
-  
-  const handleResize = (index, ref, position, size) => {
-    const updatedCharacters = [...adjustedCharacters];
-    updatedCharacters[index] = {
-      ...updatedCharacters[index],
-      x: position.x,
-      y: position.y,
-      width: size.width,
-      height: size.height
-    };
-    setAdjustedCharacters(updatedCharacters);
-  };
 
   const loadCharacters = useCallback(async () => {
     console.log("Loading characters...");
@@ -78,6 +65,8 @@ function DiaryImageGeneration() {
         ...char,
         x: 0,
         y: 0,
+        width: 100,
+        height: 100,
         opacity: 1
       })));
       
@@ -115,6 +104,18 @@ function DiaryImageGeneration() {
     setAdjustedCharacters(updatedCharacters);
   };
 
+  const handleResize = (index, e, direction, ref, delta, position) => {
+    const updatedCharacters = [...adjustedCharacters];
+    updatedCharacters[index] = {
+      ...updatedCharacters[index],
+      x: position.x,
+      y: position.y,
+      width: parseInt(ref.style.width, 10),
+      height: parseInt(ref.style.height, 10)
+    };
+    setAdjustedCharacters(updatedCharacters);
+  };
+
   const handleOpacityChange = (index, value) => {
     const updatedCharacters = [...adjustedCharacters];
     updatedCharacters[index].opacity = value;
@@ -132,11 +133,10 @@ function DiaryImageGeneration() {
       if (!auth.currentUser) {
         console.error('User is not logged in');
         alert('로그인이 필요합니다. 다시 로그인해 주세요.');
-        navigate('/login');  // 로그인 페이지로 리다이렉트
+        navigate('/login');
         return;
       }
 
-      // 이미지 합성 API 호출
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/composite-image`, {
         backgroundUrl: generatedImage,
         characters: adjustedCharacters.map(char => ({
@@ -164,7 +164,7 @@ function DiaryImageGeneration() {
         createdAt: new Date().toISOString()
       };
 
-       const docRef = await addDoc(collection(db, 'diaries'), diaryData);
+      const docRef = await addDoc(collection(db, 'diaries'), diaryData);
       console.log('Document written with ID: ', docRef.id);
 
       setSavedDiaryId(docRef.id);
@@ -178,7 +178,6 @@ function DiaryImageGeneration() {
     }
   };
 
-
   const handleRegenerateImage = () => {
     if (remainingRefreshes > 0) {
       setIsLoading(true);
@@ -188,10 +187,10 @@ function DiaryImageGeneration() {
       alert('더 이상 이미지를 새로 생성할 수 없습니다.');
     }
   };
+
   const handleProceedToAdjustment = () => {
     setIsAdjusting(true);
   };
-
   
   if (isLoading) {
     return (
@@ -203,26 +202,40 @@ function DiaryImageGeneration() {
     );
   }
   
-   if (isAdjusting) {
+  if (isAdjusting) {
     return (
       <div className="image-adjustment-container">
-        <div className="background-image" style={{backgroundImage: `url(${generatedImage})`}}>
+        <div className="background-image" style={{backgroundImage: `url(${generatedImage})`, position: 'relative', width: '100%', height: '600px'}}>
           {adjustedCharacters.map((char, index) => (
             <Rnd
               key={index}
               default={{
-                x: char.x,
-                y: char.y,
+                x: char.x || 0,
+                y: char.y || 0,
                 width: char.width || 100,
                 height: char.height || 100
               }}
-              onDragStop={(e, d) => {
-                handleDrag(index, e, { deltaX: d.x - char.x, deltaY: d.y - char.y });
-              }}
-              onResize={(e, direction, ref, delta, position) =>
-                handleResize(index, ref, position, { width: ref.offsetWidth, height: ref.offsetHeight })
-              }
+              minWidth={50}
+              minHeight={50}
               bounds="parent"
+              onDragStop={(e, d) => {
+                handleDrag(index, e, { deltaX: d.x - (char.x || 0), deltaY: d.y - (char.y || 0) });
+              }}
+              onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
+              style={{
+                border: '2px solid #00f',
+                background: 'rgba(0, 0, 255, 0.1)',
+              }}
+              resizeHandleStyles={{
+                bottomRight: {
+                  background: '#00f',
+                  width: '10px',
+                  height: '10px',
+                  right: '-5px',
+                  bottom: '-5px',
+                  cursor: 'se-resize'
+                }
+              }}
             >
               <img 
                 src={char.image} 
@@ -259,7 +272,6 @@ function DiaryImageGeneration() {
     );
   }
 
-
   return (
     <div className="diary-image-generation-container">
       <div className="content-wrapper">
@@ -276,13 +288,13 @@ function DiaryImageGeneration() {
               <button onClick={() => navigate('/home')} className="action-button">
                 홈으로 가기
               </button>
-              <button onClick={() => navigate(`/view-saved-diary/${savedDiaryId}`)} className="action-button">
+              <button onClick={() => navigate(`/diaries/${savedDiaryId}`)} className="action-button">
                 저장된 일기 보기
               </button>
-              <button onClick={() => navigate('/write-diary')} className="action-button">
+              <button onClick={() => navigate('/write')} className="action-button">
                 새 일기 쓰기
               </button>
-              <button onClick={() => navigate('/diary-calendar')} className="action-button">
+              <button onClick={() => navigate('/diaries')} className="action-button">
                 일기 달력 보기
               </button>
             </div>
