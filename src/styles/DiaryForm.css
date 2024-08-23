@@ -161,7 +161,7 @@ form.diary-form button.generate-button:hover {
   }
 
   form.diary-form textarea {
-    width: 100%;
+    width: 75%;
     height: 120px;
     font-size: 14px;
     padding: 12px;
