@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signOut} from 'firebase/auth';
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, updateDoc, limit,orderBy } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
+import { getFirestore, doc, getDoc, collection, query, where, getDocs, updateDoc, limit, orderBy } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
 import '../styles/Profile.css';
+import Chat from './Chat'; // 새로 만들 Chat 컴포넌트
 
 function Profile() {
   const [profileData, setProfileData] = useState({ email: '', photoURL: '', displayName: '' });
@@ -15,7 +16,9 @@ function Profile() {
   const navigate = useNavigate();
   const db = getFirestore();
   const storage = getStorage();
-
+  const startChat = (friend) => {
+    setSelectedFriend(friend);
+  };
   useEffect(() => {
     loadProfileData();
     loadFriends();
@@ -150,9 +153,16 @@ function Profile() {
               <button onClick={() => navigate(`/user/${friend.id}`)} className="view-posts-btn">
                 게시물 보기
               </button>
+              <button onClick={() => startChat(friend)} className="chat-btn">
+                채팅하기
+              </button>
             </div>
           ))}
         </div>
+      )}
+
+        {selectedFriend && (
+        <Chat friend={selectedFriend} onClose={() => setSelectedFriend(null)} />
       )}
     </div>
   );

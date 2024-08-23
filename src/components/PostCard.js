@@ -259,8 +259,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
               className="diary-toggle"
               onClick={() => setShowDiaryContent(!showDiaryContent)}
             >
-              {showDiaryContent ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-              일기 내용 {showDiaryContent ? '숨기기' : '보기'}
+              {showDiaryContent ? <ChevronUp size={18} color="black" /> : <ChevronDown size={18} color="black" />}
             </button>
             {showDiaryContent && (
         
