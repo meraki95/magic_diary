@@ -15,16 +15,22 @@ function AICounseling() {
   }, []);
 
   const fetchDiaryCount = async () => {
+    setIsLoading(true);
     try {
       const auth = getAuth();
       const user = auth.currentUser;
       if (user) {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diary-count/${user.uid}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/diary-count/${user.uid}`,{
+          timeout: 10000
+        });
         setDiaryCount(response.data.count);
       }
     } catch (error) {
       console.error("일기 개수 조회 오류:", error);
       setError("일기 개수를 불러오는데 실패했습니다.");
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 

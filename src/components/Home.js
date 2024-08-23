@@ -12,6 +12,8 @@ function Home({ toggleSidebar }) {
   const [communityHighlight, setCommunityHighlight] = useState(null);
   const [diaryCount, setDiaryCount] = useState(0);
   const [aiAdvice, setAiAdvice] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const diaryTopics = [
     "오늘 하루를 색으로 표현한다면?",
@@ -70,10 +72,25 @@ function Home({ toggleSidebar }) {
     if (toggleSidebar) {
       toggleSidebar(false);
     }
-    loadRecentDiary();
-    loadCommunityHighlight();
-    fetchDiaryCount();
+    loadAllData();
   }, [toggleSidebar]);
+
+  const loadAllData = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await Promise.all([
+        loadRecentDiary(),
+        loadCommunityHighlight(),
+        fetchDiaryCount()
+      ]);
+    } catch (err) {
+      console.error("데이터 로딩 중 오류 발생:", err);
+      setError("데이터를 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const loadRecentDiary = async () => {
     const auth = getAuth();
@@ -121,7 +138,9 @@ function Home({ toggleSidebar }) {
       const auth = getAuth();
       const user = auth.currentUser;
       if (user) {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/diary-count/${user.uid}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diary-count/${user.uid}`, {
+          timeout: 10000
+        });
         setDiaryCount(response.data.count);
         if (response.data.count >= 5) {
           fetchAiAdvice(user.uid);
@@ -129,6 +148,7 @@ function Home({ toggleSidebar }) {
       }
     } catch (error) {
       console.error("일기 개수 조회 오류:", error);
+      throw error;
     }
   };
 
@@ -145,6 +165,14 @@ function Home({ toggleSidebar }) {
 
   const today = new Date().toLocaleDateString();
   const recommendedDiaryTopic = diaryTopics[Math.floor(Math.random() * diaryTopics.length)];
+
+  if (isLoading) {
+    return <div className="loading">데이터를 불러오는 중입니다...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div className="home-container">
