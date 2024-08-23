@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/DiaryForm.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Firestore에 데이터 저장 관련 함수 추가
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 function DiaryForm() {
@@ -126,7 +126,7 @@ function DiaryForm() {
       </div>
 
       <div className="date-picker">
-        <label htmlFor="diary-date"></label>
+        <label htmlFor="diary-date">날짜 선택:</label>
         <input
           type="date"
           id="diary-date"
