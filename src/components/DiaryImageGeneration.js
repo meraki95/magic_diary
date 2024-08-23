@@ -98,22 +98,23 @@ function DiaryImageGeneration() {
   }, [selectedDiary, navigate, loadCharacters, generateImage]);
 
   const handleDrag = (index, e, ui) => {
-    const updatedCharacters = [...adjustedCharacters];
-    updatedCharacters[index].x += ui.deltaX;
-    updatedCharacters[index].y += ui.deltaY;
-    setAdjustedCharacters(updatedCharacters);
-  };
+    console.log('Dragging:', { index, x: d.x, y: d.y });
+  setAdjustedCharacters(prevChars => prevChars.map((char, i) => 
+    i === index ? { ...char, x: d.x, y: d.y } : char
+  ));
+};
 
   const handleResize = (index, e, direction, ref, delta, position) => {
-    const updatedCharacters = [...adjustedCharacters];
-    updatedCharacters[index] = {
-      ...updatedCharacters[index],
-      x: position.x,
-      y: position.y,
-      width: parseInt(ref.style.width, 10),
-      height: parseInt(ref.style.height, 10)
-    };
-    setAdjustedCharacters(updatedCharacters);
+    console.log('Resizing:', { index, width: ref.offsetWidth, height: ref.offsetHeight, x: position.x, y: position.y });
+    setAdjustedCharacters(prevChars => prevChars.map((char, i) => 
+      i === index ? {
+        ...char,
+        width: Math.round(ref.offsetWidth),
+        height: Math.round(ref.offsetHeight),
+        x: Math.round(position.x),
+        y: Math.round(position.y)
+      } : char
+    ));
   };
 
   const handleOpacityChange = (index, value) => {
@@ -206,22 +207,16 @@ function DiaryImageGeneration() {
     return (
       <div className="image-adjustment-container">
         <div className="background-image" style={{backgroundImage: `url(${generatedImage})`, position: 'relative', width: '100%', height: '600px'}}>
-          {adjustedCharacters.map((char, index) => (
+            {adjustedCharacters.map((char, index) => (
             <Rnd
               key={index}
-              default={{
-                x: char.x || 0,
-                y: char.y || 0,
-                width: char.width || 100,
-                height: char.height || 100
-              }}
+              size={{ width: char.width, height: char.height }}
+              position={{ x: char.x, y: char.y }}
+              onDragStop={(e, d) => handleDrag(index, e, d)}
+              onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
+              bounds="parent"
               minWidth={50}
               minHeight={50}
-              bounds="parent"
-              onDragStop={(e, d) => {
-                handleDrag(index, e, { deltaX: d.x - (char.x || 0), deltaY: d.y - (char.y || 0) });
-              }}
-              onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
               style={{
                 border: '2px solid #00f',
                 background: 'rgba(0, 0, 255, 0.1)',

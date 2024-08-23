@@ -265,7 +265,70 @@ app.get('/api/proxy-image', async (req, res) => {
 });
 
 // 이미지 합성 API
+// 이미지 합성 API
+app.post('/api/composite-image', async (req, res) => {
+  try {
+    const { backgroundUrl, characters } = req.body;
+    console.log("Received request for composite-image:", { backgroundUrl, characters });
 
+    // 배경 이미지 다운로드
+    const backgroundResponse = await axios.get(backgroundUrl, { responseType: 'arraybuffer' });
+    let background = sharp(backgroundResponse.data);
+
+    // 배경 이미지 크기 얻기
+    const { width: bgWidth, height: bgHeight } = await background.metadata();
+    console.log("Background image dimensions:", { bgWidth, bgHeight });
+
+    // 각 캐릭터 이미지 합성
+    for (let character of characters) {
+      console.log("Processing character:", character);
+      if (!character.image) {
+        console.log("Skipping character due to missing image:", character.name);
+        continue;
+      }
+
+      try {
+        const charResponse = await axios.get(character.image, { responseType: 'arraybuffer' });
+        let charImage = sharp(charResponse.data);
+
+        // 캐릭터 이미지 크기 조정 및 투명도 적용
+        const resizedChar = await charImage
+          .resize({ 
+            width: Math.round(character.width), 
+            height: Math.round(character.height), 
+            fit: 'inside' 
+          })
+          .composite([{
+            input: Buffer.from([255, 255, 255, Math.round(character.opacity * 255)]),
+            raw: { width: 1, height: 1, channels: 4 }
+          }])
+          .toBuffer();
+
+        // 캐릭터 이미지 합성
+        background = background.composite([{ 
+          input: resizedChar, 
+          top: Math.round(character.y), 
+          left: Math.round(character.x) 
+        }]);
+      } catch (charError) {
+        console.error('캐릭터 이미지 처리 오류:', charError);
+      }
+    }
+
+    // 최종 이미지를 버퍼로 변환
+    const outputBuffer = await background.jpeg().toBuffer();
+
+    // 이미지를 Base64로 인코딩
+    const base64Image = outputBuffer.toString('base64');
+    const compositedImageUrl = `data:image/jpeg;base64,${base64Image}`;
+
+    console.log("Composite image created successfully");
+    res.json({ compositedImageUrl });
+  } catch (error) {
+    console.error('이미지 합성 오류:', error);
+    res.status(500).json({ error: '이미지 합성에 실패했습니다.' });
+  }
+});
 // 정적 파일 제공을 위한 미들웨어
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 

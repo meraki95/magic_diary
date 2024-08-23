@@ -120,14 +120,24 @@ h2 {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-}
+  overflow: hidden; 
 
+}
 .draggable-character {
   position: absolute;
   cursor: move;
   max-width: 100px;
   max-height: 100px;
 }
+.react-draggable:hover {
+  outline: 2px solid #00f;
+}
+
+/* 추가: Rnd 컴포넌트의 리사이즈 핸들을 더 잘 보이게 */
+.react-draggable-dragging {
+  z-index: 1000;
+}
+
 
 .adjustment-controls {
   display: flex;
