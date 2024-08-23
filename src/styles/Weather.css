@@ -1,0 +1,17 @@
+.weather-container {
+    background-color: #f0f8ff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .weather-container h3 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  .weather-container p {
+    margin: 5px 0;
+    color: #666;
+  }

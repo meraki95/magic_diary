@@ -152,6 +152,8 @@ app.post('/api/generate-diary', async (req, res) => {
 });
 
 
+
+
 // 레오나르도 API를 사용한 이미지 생성 라우트
 app.post('/api/generate-image', async (req, res) => {
   const { diary, style, characters } = req.body;

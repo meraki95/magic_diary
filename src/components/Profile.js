@@ -25,7 +25,7 @@ function Profile() {
     setSelectedFriend(friend);
   };
 
-
+  
   useEffect(() => {
     loadProfileData();
     loadFriends();
@@ -150,7 +150,7 @@ function Profile() {
         <button onClick={() => setShowFriends(!showFriends)} className="friends-list-btn">친구 목록</button>
         <button onClick={handleLogout} className="logout-btn">로그아웃</button>
       </div>
-       {showFriends && (
+      {showFriends && (
         <div className="friends-list">
           <h3>친구 목록</h3>
           {friends.map((friend) => (
@@ -167,7 +167,8 @@ function Profile() {
           ))}
         </div>
       )}
-     {selectedFriend && (
+
+      {selectedFriend && (
         <Chat friend={selectedFriend} onClose={() => setSelectedFriend(null)} />
       )}
     </div>
