@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc, collection, query, where, getDocs, updateDoc
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
 import '../styles/Profile.css';
-import Chat from './Chat'; // 새로 만들 Chat 컴포넌트
+import Chat from './Chat'; // 새로 만든 Chat 컴포넌트
 
 function Profile() {
   const [profileData, setProfileData] = useState({ email: '', photoURL: '', displayName: '' });
@@ -13,12 +13,19 @@ function Profile() {
   const [friends, setFriends] = useState([]);
   const [showFriends, setShowFriends] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFriend, setSelectedFriend] = useState(null); // 추가된 상태
   const navigate = useNavigate();
   const db = getFirestore();
   const storage = getStorage();
+
+
+
+
   const startChat = (friend) => {
     setSelectedFriend(friend);
   };
+
+
   useEffect(() => {
     loadProfileData();
     loadFriends();
@@ -143,7 +150,7 @@ function Profile() {
         <button onClick={() => setShowFriends(!showFriends)} className="friends-list-btn">친구 목록</button>
         <button onClick={handleLogout} className="logout-btn">로그아웃</button>
       </div>
-      {showFriends && (
+       {showFriends && (
         <div className="friends-list">
           <h3>친구 목록</h3>
           {friends.map((friend) => (
@@ -160,8 +167,7 @@ function Profile() {
           ))}
         </div>
       )}
-
-        {selectedFriend && (
+     {selectedFriend && (
         <Chat friend={selectedFriend} onClose={() => setSelectedFriend(null)} />
       )}
     </div>
