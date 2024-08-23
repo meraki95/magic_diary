@@ -114,6 +114,10 @@ app.post('/api/kakaoLogin', async (req, res) => {
 app.post('/api/generate-diary', async (req, res) => {
   const { userInput, prompt } = req.body;
   try {
+    // 사용자 입력의 길이에 따라 목표 길이 조정
+    const inputLength = userInput.length;
+    const targetLength = inputLength < 100 ? inputLength * 2 : 400;
+
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
@@ -121,11 +125,11 @@ app.post('/api/generate-diary', async (req, res) => {
         messages: [
           {
             role: 'system',
-            content: '사용자가 제공한 정보만을 사용하여 400자 내외의 일기를 작성하세요. 날짜, 추가적인 사건, 상상의 감정을 포함하지 마세요. 오직 사용자가 언급한 사실만 사용하세요. 만약 사람 이름으로 추정되는 단어가 있다면 반드시 포함하세요.',
+            content: `사용자가 제공한 정보를 사용하여 약 ${targetLength}자 내외의 일기를 작성하세요. 적절한 비유를 사용하여 내용을 풍부하게 만드세요. 날짜, 추가적인 사건, 상상의 감정을 포함하지 마세요. 오직 사용자가 언급한 사실만 사용하세요. 만약 사람 이름으로 추정되는 단어가 있다면 반드시 포함하세요.`,
           },
           {
             role: 'user',
-            content: `다음 내용을 바탕으로 ${prompt} 사용자가 언급한 사실만을 포함하여 400자 내외의 일기를 작성하세요: ${userInput}`,
+            content: `다음 내용을 바탕으로 ${prompt} 사용자가 언급한 사실만을 포함하여 적절한 비유를 사용해 일기를 작성하세요: ${userInput}`,
           },
         ],
         max_tokens: 500,
@@ -162,14 +166,16 @@ app.post('/api/generate-image', async (req, res) => {
     }
 
     const requestBody = {
-      prompt: `A detailed, scenic background of ${backgroundDescription}. Style: ${style || 'photorealistic'}. Create a vivid and immersive landscape or environment, focusing purely on the atmosphere and key background elements described. Ensure there are no signs, symbols, text, or lettering present. The scene should be devoid of any people, characters, animals, or artificial structures.`,
-      width: 512,
-      height: 512,
-      negative_prompt: "people, person, human, character, face, body, hands, feet, text, words, letters, typography, font, signage, symbols, figures, silhouettes, animals",
-      modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // 사실적인 배경을 위한 PhotoReal V2 모델
+      prompt: `A hyper-realistic, highly detailed photograph of ${backgroundDescription}. Style: ${style || 'photorealistic'}. Create an extremely lifelike and immersive landscape or environment, with a strong emphasis on the location and setting. The image should capture the essence of the place described, including its unique features, lighting, and atmosphere. Ensure the scene looks indistinguishable from a real photograph, with accurate textures, shadows, and reflections. The image should be devoid of any people or recognizable individuals, focusing purely on the environment and its details.`,
+      width: 1024,
+      height: 1024,
+      negative_prompt: "people, person, human, character, face, body, hands, feet, text, words, letters, typography, font, signage, symbols, figures, silhouettes, cartoon, anime, illustration, painting, drawing, artificial, unrealistic",
+      modelId: "1aa0bd4e-6e00-4762-a6c7-ee056483f54d", // 더욱 사실적인 이미지를 위한 Leonardo Creative 모델
       num_images: 1,
+      promptMagic: true, // 프롬프트 매직 활성화
+      highContrast: true, // 고대비 설정 활성화
+      contrastRatio: 1.1, // 약간의 대비 증가
     };
-    
 
     const response = await axios.post(
       'https://cloud.leonardo.ai/api/rest/v1/generations',
@@ -227,14 +233,26 @@ async function extractKeyBackgroundAndTranslate(koreanDiary, characters) {
         messages: [
           {
             role: 'system',
-            content: 'You are a translator and content editor. Your task is to translate Korean diary entries to English, remove all mentions of specific people\'s names (including the names provided), and adjust the text to maintain natural flow. Focus on describing the environment, setting, and mood without mentioning individuals or any human presence.',
+            content: `You are a translator and content editor. Your task is to translate Korean diary entries to English, remove all mentions of specific people's names (including the names provided), and adjust the text to maintain natural flow. Focus on describing the following elements without mentioning individuals or any human presence:
+            1. Environment and setting (e.g., landscapes, buildings, rooms)
+            2. Weather and time of day
+            3. Objects and items
+            4. Food and drinks
+            5. Animals (if mentioned)
+            6. Natural phenomena
+            7. Seasons and climate
+            8. Atmosphere and mood
+            9. Colors and textures
+            10. Sounds and smells (if described)
+            
+            Provide a concise description suitable for image generation, focusing on visual elements.`,
           },
           {
             role: 'user',
             content: `Translate the following Korean diary entry to English, remove all mentions of specific people's names (including these names: ${characterNames}), and adjust the text to maintain natural flow. Focus on the key background elements, environment, and mood without any human presence: ${koreanDiary}`,
           },
         ],
-        max_tokens: 150,
+        max_tokens: 200,
         temperature: 0.7,
       },
       {
