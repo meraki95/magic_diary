@@ -3,8 +3,8 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 15px;
   color: #333;
-  width: 90%; /* 전체 너비의 90%로 설정 */
-  max-width: 500px; /* 최대 너비 줄임 */
+  width: 90%;
+  max-width: 500px;
   margin: 20px auto;
   text-align: center;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
@@ -13,97 +13,161 @@
   overflow: hidden;
 }
 
+h2 {
+  margin-bottom: 20px;
+  color: #4a4a4a;
+  font-size: 24px;
+}
+
 .style-buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .style-button {
-  margin: 5px 2px; /* 좌우 마진 줄임 */
-  padding: 8px 12px; /* 패딩 조정 */
+  margin: 5px;
+  padding: 10px 15px;
   border: none;
-  border-radius: 20px;
-  font-size: 13px; /* 글꼴 크기 조정 */
+  border-radius: 25px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
+  background-color: #e0e0e0;
+  color: #4a4a4a;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.style-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.style-button.selected {
+  background-color: #6C63FF;
+  color: white;
+  box-shadow: 0 4px 8px rgba(108,99,255,0.3);
 }
 
 .date-picker {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   width: 100%;
 }
 
 .date-picker input[type="date"] {
   width: 100%;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 25px;
   border: 1px solid #c3cfe2;
   font-size: 16px;
   box-sizing: border-box;
+  background-color: white;
+  color: #4a4a4a;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+form.diary-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 form.diary-form textarea {
   width: 100%;
-  height: 150px; /* 높이 조정 */
-  padding: 12px;
-  border-radius: 10px;
+  height: 150px;
+  padding: 15px;
+  border-radius: 15px;
   border: 2px solid #c3cfe2;
-  font-size: 14px; /* 글꼴 크기 조정 */
+  font-size: 16px;
   background-color: #fff;
   color: #333;
   resize: vertical;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   transition: all 0.3s ease;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
   box-sizing: border-box;
 }
 
+form.diary-form textarea:focus {
+  border-color: #6C63FF;
+  box-shadow: 0 0 0 2px rgba(108,99,255,0.2);
+}
+
 form.diary-form button.generate-button {
-  padding: 12px 20px;
+  padding: 12px 25px;
   background: linear-gradient(45deg, #6C63FF, #4B48E0);
   color: white;
   border: none;
   border-radius: 25px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: bold;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 100%;
+  max-width: 300px;
+}
+
+form.diary-form button.generate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 마법적인 효과 */
+.diary-form-container::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff00ee, #00ff00, #00ffff, #ff00ff);
+  z-index: -1;
+  filter: blur(10px);
+  background-size: 400% 400%;
+  animation: sparkle 15s ease infinite;
+  opacity: 0.7;
+  border-radius: 16px;
+}
+
+@keyframes sparkle {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @media (max-width: 768px) {
   .diary-form-container {
-    width: 95%; /* 모바일에서 더 넓게 사용 */
+    width: calc(100% - 40px);
+    margin: 10px 20px;
     padding: 15px;
-    margin: 10px auto;
   }
 
   h2 {
-    font-size: 20px; /* 제목 크기 조정 */
-    margin-bottom: 12px;
+    font-size: 20px;
+    margin-bottom: 15px;
   }
 
   .style-button {
-    padding: 6px 10px;
-    font-size: 11px;
+    padding: 8px 12px;
+    font-size: 12px;
   }
 
   form.diary-form textarea {
-    height: 120px; /* 모바일에서 높이 조정 */
+    height: 120px;
     font-size: 14px;
-    padding: 10px;
+    padding: 12px;
   }
 
   form.diary-form button.generate-button {
-    padding: 10px 18px;
-    font-size: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
   }
 
   .date-picker input[type="date"] {
     font-size: 14px;
-    padding: 8px;
+    padding: 10px;
   }
 }
