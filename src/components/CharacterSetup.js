@@ -43,10 +43,10 @@ function CharacterSetup() {
   }, []);
 
   const getDefaultProfiles = () => [
-    { name: '인물 1', image: null },
-    { name: '인물 2', image: null },
-    { name: '인물 3', image: null },
-    { name: '인물 4', image: null },
+    { name: '', image: null },
+    { name: '', image: null },
+    { name: '', image: null },
+    { name: '', image: null },
   ];
 
   const handleImageUpload = async (index, file) => {
@@ -69,7 +69,7 @@ function CharacterSetup() {
 
   const handleNameChange = (index, newName) => {
     const updatedProfiles = [...profiles];
-    updatedProfiles[index].name = newName.trim() || `인물 ${index + 1}`;
+    updatedProfiles[index].name = newName.trim();
     setProfiles(updatedProfiles);
   };
 
@@ -97,6 +97,7 @@ function CharacterSetup() {
   };
 
   const handleInputFocus = (index) => {
+    // 포커스 시 이름이 기본 이름인 경우 비우기
     if (profiles[index].name.startsWith('인물 ')) {
       const updatedProfiles = [...profiles];
       updatedProfiles[index].name = '';
@@ -105,15 +106,11 @@ function CharacterSetup() {
   };
 
   const handleInputBlur = (index) => {
-    const updatedProfiles = [...profiles];
-    if (!updatedProfiles[index].name.trim()) {
-      updatedProfiles[index].name = `인물 ${index + 1}`;
-      setProfiles(updatedProfiles);
-    }
+    // 이제 blur 시 자동으로 기본 이름을 생성하지 않음
   };
 
   const handleAddProfile = () => {
-    setProfiles([...profiles, { name: `인물 ${profiles.length + 1}`, image: null }]);
+    setProfiles([...profiles, { name: '', image: null }]);
   };
 
   if (isLoading) {

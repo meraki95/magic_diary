@@ -1,3 +1,29 @@
+.character-setup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: #ffffff;
+  min-height: 100vh;
+  padding-top: 80px;
+  transition: all 0.3s ease;
+  width: 100%; /* 컨테이너가 화면 전체를 사용 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비 계산 */
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 40px;
+  justify-content: center; /* 그리드 아이템들을 중앙에 배치 */
+}
+
 .character-item {
   display: flex;
   flex-direction: column;
@@ -10,19 +36,13 @@
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
   border: 1px solid rgba(255, 255, 255, 0.18);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 200px; /* 아이템 크기를 고정 */
-}
-
-.character-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
 }
 
 .character-item img {
   width: 180px; /* 고정된 너비 */
   height: 240px; /* 고정된 높이로 비율 유지 */
   border-radius: 10px;
-  object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 */
+  object-fit: cover;
   margin-bottom: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
@@ -45,6 +65,7 @@
   margin-bottom: 10px;
   padding: 8px;
   width: 100%;
+  max-width: 180px; /* 인풋 필드의 최대 너비 */
   border-radius: 5px;
   border: 1px solid #ccc;
   text-align: center;
@@ -66,74 +87,44 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-.character-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
-  width: 100%;
-  max-width: 1200px;
-  margin-top: 40px;
-  justify-content: center; /* 중앙 정렬 */
-}
-
-@media (max-width: 1024px) {
-  .character-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-}
-
 @media (max-width: 768px) {
-  .character-setup-container {
-    padding: 20px;
-    padding-top: 60px;
-  }
-
   .character-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
   }
- 
+
   .character-item {
     padding: 15px;
   }
 
-  .character-item p {
-    font-size: 16px;
+  .name-input {
+    max-width: 150px;
   }
-  .save-button {
-    margin-top: 40px; /* 위 요소들과의 간격을 설정 */
-    padding: 12px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+}
+
+@media (max-width: 480px) {
+  .character-setup-container {
+    padding: 20px;
+    padding-top: 40px;
   }
-  .save-button:hover {
-    background-color: #45a049;
+
+  .character-grid {
+    grid-template-columns: 1fr; /* 작은 화면에서는 한 줄에 하나의 아이템만 */
+    gap: 20px;
+    width: 100%; /* 그리드가 화면 전체 너비를 차지 */
+  }
+
+  .character-item {
+    padding: 20px;
+    width: 100%; /* 그리드 아이템이 화면 전체를 차지 */
   }
 
   .character-placeholder {
     width: 150px;
     height: 200px;
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .character-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
   }
 
-  .character-item {
-    padding: 20px;
-  }
-
-  .character-placeholder {
-    width: 180px;
-    height: 240px;
+  .name-input {
+    max-width: 100%; /* 인풋 필드가 화면 너비에 맞게 */
   }
 }
