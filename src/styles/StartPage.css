@@ -32,23 +32,45 @@
 }
 
 .diary-image.flipping {
-  animation: flipPages 2.5s ease forwards;
+  animation: flipPages 2.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 @keyframes flipPages {
   0% {
     transform: rotateY(0deg);
   }
-  20% {
+  10% {
     transform: rotateY(-30deg);
   }
-  40% {
+  20% {
     transform: rotateY(-60deg);
   }
-  60% {
+  30% {
     transform: rotateY(-90deg);
   }
-  100% {
+  40% {
+    transform: rotateY(-120deg);
+  }
+  50% {
+    transform: rotateY(-150deg);
+  }
+  60% {
     transform: rotateY(-180deg);
   }
+  70% {
+    transform: rotateY(-210deg);
+  }
+  80% {
+    transform: rotateY(-240deg);
+  }
+  90% {
+    transform: rotateY(-270deg);
+  }
+  100% {
+    transform: rotateY(-300deg);
+  }
+}
+
+.diary-image {
+  will-change: transform; /* GPU 가속을 활성화하여 애니메이션 성능 향상 */
 }
