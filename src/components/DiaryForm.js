@@ -137,6 +137,7 @@ function DiaryForm() {
       </div>
 
       <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="diary-form">
         <textarea
           value={entry}
           onChange={(e) => setEntry(e.target.value)}
@@ -146,6 +147,7 @@ function DiaryForm() {
         <button type="submit" className="generate-button" disabled={isLoading}>
           {isLoading ? '생성 중...' : '일기 및 이미지 생성하기'}
         </button>
+        </form>
       </form>
       {isLoading && <div className="loading-spinner">일기를 생성하고 있어요. 잠시만 기다려주세요...</div>}
     </div>
