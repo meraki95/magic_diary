@@ -22,8 +22,11 @@ function Profile() {
   const storage = getStorage();
 
   useEffect(() => {
-    loadProfileData();
-    loadFriendRequests();
+    const fetchData = async () => {
+      await loadProfileData();
+      await loadFriendRequests();
+    };
+    fetchData();
   }, []);
 
   const loadProfileData = async () => {
@@ -101,9 +104,12 @@ function Profile() {
             id: doc.id,
             from: requestData.from,
             fromName: fromUserData?.displayName || '익명',
-            fromPhotoURL: fromUserData?.photoURL || 'https://via.placeholder.com/50'
+            fromPhotoURL: fromUserData?.photoURL || 'https://via.placeholder.com/50',
+            status: requestData.status,
+            createdAt: requestData.createdAt?.toDate() || new Date()  // Firestore Timestamp를 JavaScript Date로 변환
           };
         }));
+        console.log('Loaded friend requests:', requests); // 디버깅을 위한 로그
         setFriendRequests(requests);
       }
     } catch (error) {
@@ -228,21 +234,21 @@ function Profile() {
         </div>
       )}
       {showFriendRequests && (
-        <div className="friend-requests-list">
-          <h3>친구 요청</h3>
-          {friendRequests.map((request) => (
-            <div key={request.id} className="friend-request-item">
-              <img src={request.fromPhotoURL} alt={request.fromName} className="friend-avatar" />
-              <span>{request.fromName}</span>
-              <button onClick={() => handleFriendRequestAction(request.id, 'accept')} className="accept-btn">
-                수락
-              </button>
-              <button onClick={() => handleFriendRequestAction(request.id, 'reject')} className="reject-btn">
-                거절
-              </button>
-            </div>
-          ))}
-        </div>
+       <div className="friend-requests-list">
+       <h3>친구 요청 ({friendRequests.length})</h3>
+       {friendRequests.map((request) => (
+         <div key={request.id} className="friend-request-item">
+           <img src={request.fromPhotoURL} alt={request.fromName} className="friend-avatar" />
+           <span>{request.fromName}</span>
+           <button onClick={() => handleFriendRequestAction(request.id, 'accept')} className="accept-btn">
+             수락
+           </button>
+           <button onClick={() => handleFriendRequestAction(request.id, 'reject')} className="reject-btn">
+             거절
+           </button>
+         </div>
+       ))}
+     </div>
       )}
       {selectedFriend && (
         <Chat friend={selectedFriend} onClose={() => setSelectedFriend(null)} />

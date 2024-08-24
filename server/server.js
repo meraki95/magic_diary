@@ -244,7 +244,6 @@ async function extractKeyBackgroundAndTranslate(koreanDiary, characters) {
             6. Atmosphere and mood
             7. Colors and textures
             
-            
             Provide a concise description suitable for image generation, focusing on visual elements.`,
           },
           {
