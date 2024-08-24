@@ -272,7 +272,7 @@ function Profile() {
           친구 요청
           {friendRequests.length > 0 && <span className="friend-request-count">{friendRequests.length}</span>}
         </button>
-        <button onClick={handleLogout} className="logout-btn">로그아웃</button>
+        <button onClick={handleLogout} className="logout-btn">로그 아웃</button>
       </div>
       {!profileData.photoURL && (
         <div className="file-upload-container">

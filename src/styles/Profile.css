@@ -102,10 +102,6 @@
 .friend-requests-btn {
   background: #4a90e2;
   color: #FFFFFF;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
 }
 .friend-request-count {
   background-color: #ff4d4d;
