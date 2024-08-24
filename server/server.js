@@ -239,13 +239,11 @@ async function extractKeyBackgroundAndTranslate(koreanDiary, characters) {
             1. Environment and setting (e.g., landscapes, buildings, rooms)
             2. Weather and time of day
             3. Objects and items
-            4. Food and drinks
-            5. Animals (if mentioned)
-            6. Natural phenomena
-            7. Seasons and climate
-            8. Atmosphere and mood
-            9. Colors and textures
-            10. Sounds and smells (if described)
+            4. Natural phenomena
+            5. Seasons and climate
+            6. Atmosphere and mood
+            7. Colors and textures
+            
             
             Provide a concise description suitable for image generation, focusing on visual elements.`,
           },
