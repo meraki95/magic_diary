@@ -27,7 +27,23 @@ function Profile() {
       await loadFriendRequests();
     };
     fetchData();
-  }, []);
+
+  const user = auth.currentUser;
+  if (user) {
+    const requestsQuery = query(
+      collection(db, 'friendRequests'),
+      where('to', '==', user.uid),
+      where('status', '==', 'pending')
+    );
+
+    const unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
+      console.log("Friend requests updated");
+      loadFriendRequests();
+    });
+
+    return () => unsubscribe();
+  }
+}, []);
 
   const loadProfileData = async () => {
     try {
@@ -89,6 +105,7 @@ function Profile() {
   const loadFriendRequests = async () => {
     try {
       const user = auth.currentUser;
+      console.log("Current user:", user);
       if (user) {
         const requestsQuery = query(
           collection(db, 'friendRequests'),
@@ -96,27 +113,32 @@ function Profile() {
           where('status', '==', 'pending')
         );
         const requestsSnapshot = await getDocs(requestsQuery);
-        const requests = await Promise.all(requestsSnapshot.docs.map(async (doc) => {
+        console.log("Friend requests snapshot:", requestsSnapshot);
+        
+        const requests = [];
+        for (const doc of requestsSnapshot.docs) {
           const requestData = doc.data();
-          const fromUserDoc = await getDoc(doc(db, 'profiles', requestData.from));
+          console.log("Request data:", requestData);
+          const fromUserDoc = await getDoc(doc.ref.firestore.doc(`profiles/${requestData.from}`));
           const fromUserData = fromUserDoc.data();
-          return {
+          requests.push({
             id: doc.id,
             from: requestData.from,
+            to: requestData.to,
             fromName: fromUserData?.displayName || '익명',
             fromPhotoURL: fromUserData?.photoURL || 'https://via.placeholder.com/50',
             status: requestData.status,
-            createdAt: requestData.createdAt?.toDate() || new Date()  // Firestore Timestamp를 JavaScript Date로 변환
-          };
-        }));
-        console.log('Loaded friend requests:', requests); // 디버깅을 위한 로그
+            createdAt: requestData.createdAt?.toDate() || new Date()
+          });
+        }
+        
+        console.log('Loaded friend requests:', requests);
         setFriendRequests(requests);
       }
     } catch (error) {
       console.error('친구 요청 불러오기 실패:', error);
     }
   };
-
   const handleFriendRequestAction = async (requestId, action) => {
     try {
       const user = auth.currentUser;

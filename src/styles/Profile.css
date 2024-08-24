@@ -13,26 +13,26 @@
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
 }
 
-.profile-image-container {
-  position: relative;
+.profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 40px;
   width: 100%;
+  margin-bottom: 30px;
+}
+
+.profile-image-container {
+  position: relative;
+  margin-bottom: 20px;
 }
 
 .profile-image, .profile-placeholder {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  margin-bottom: 20px;
+  object-fit: cover;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
-}
-
-.profile-image {
-  object-fit: cover;
 }
 
 .profile-image:hover, .profile-placeholder:hover {
@@ -52,8 +52,8 @@
 
 .friend-request-notification {
   position: absolute;
-  bottom: 20px;
-  right: calc(50% - 100px);
+  bottom: 10px;
+  right: 10px;
   background-color: #ff4d4d;
   color: white;
   border-radius: 50%;
@@ -65,6 +65,60 @@
   font-size: 14px;
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.profile-name {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.friends-list-btn {
+  background: linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+  color: #FFFFFF;
+}
+
+.friend-requests-btn {
+  background: #4a90e2;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.friend-requests-btn svg {
+  margin-right: 10px;
+}
+
+.logout-btn {
+  background: #f44336;
+  color: #FFFFFF;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .file-upload-container {
@@ -92,50 +146,15 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-.profile-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.profile-content h2 {
-  margin-bottom: 30px;
-  font-size: 32px;
-  color: #ffffff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.friends-list-btn, .logout-btn {
-  background: linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
-  color: #FFFFFF;
-  padding: 15px 30px;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 16px;
-  width: 100%;
-  max-width: 250px;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.friends-list-btn:hover, .logout-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.friends-list {
+.friends-list, .friend-requests-list {
   width: 100%;
   max-width: 500px;
   margin-top: 30px;
 }
 
-.friend-item {
+.friend-item, .friend-request-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 15px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
@@ -144,7 +163,7 @@
   transition: all 0.3s ease;
 }
 
-.friend-item:hover {
+.friend-item:hover, .friend-request-item:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
@@ -158,75 +177,29 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.view-posts-btn {
-  background: linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
-  color: #FFFFFF;
+.friend-name {
+  flex-grow: 1;
+  font-weight: bold;
+}
+
+.view-posts-btn, .chat-btn, .accept-btn, .reject-btn {
   padding: 8px 16px;
   border: none;
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s ease;
-}
-
-.view-posts-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.friend-requests-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 8px 15px;
-  background-color: #4a90e2;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.friend-requests-btn:hover {
-  background-color: #357abd;
-}
-
-.friend-requests-btn svg {
-  margin-right: 5px;
-}
-
-.request-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #ff4d4d;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.friend-requests-list {
-  margin-top: 20px;
-}
-
-.friend-request-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.accept-btn, .reject-btn {
   margin-left: 10px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+}
+
+.view-posts-btn {
+  background: linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+  color: #FFFFFF;
+}
+
+.chat-btn {
+  background: linear-gradient(45deg, #2196F3 0%, #21CBF3 100%);
+  color: #FFFFFF;
 }
 
 .accept-btn {
@@ -239,19 +212,7 @@
   color: white;
 }
 
-.chat-btn {
-  background: linear-gradient(45deg, #2196F3 0%, #21CBF3 100%);
-  color: #FFFFFF;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  margin-left: 10px;
-}
-
-.chat-btn:hover {
+.view-posts-btn:hover, .chat-btn:hover, .accept-btn:hover, .reject-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -266,16 +227,16 @@
     height: 150px;
   }
 
-  .profile-content h2 {
+  .profile-name {
     font-size: 28px;
   }
 
-  .friends-list-btn, .logout-btn {
-    padding: 12px 24px;
+  .action-btn {
+    padding: 10px 20px;
     font-size: 14px;
   }
 
-  .friend-item {
+  .friend-item, .friend-request-item {
     padding: 12px;
   }
 
@@ -284,7 +245,7 @@
     height: 40px;
   }
 
-  .view-posts-btn {
+  .view-posts-btn, .chat-btn, .accept-btn, .reject-btn {
     padding: 6px 12px;
     font-size: 12px;
   }
