@@ -30,6 +30,7 @@ function Profile() {
 
     const user = auth.currentUser;
     if (user) {
+      console.log('Setting up friend requests listener for user:', user.uid);
       const requestsQuery = query(
         collection(db, 'friendRequests'),
         where('to', '==', user.uid),
@@ -37,7 +38,10 @@ function Profile() {
       );
 
       const unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
-        console.log("Friend requests updated");
+        console.log("Friend requests updated, snapshot size:", snapshot.size);
+        snapshot.docChanges().forEach((change) => {
+          console.log("Change type:", change.type, "document:", change.doc.data());
+        });
         loadFriendRequests();
       });
 
@@ -106,6 +110,7 @@ function Profile() {
     try {
       const user = auth.currentUser;
       if (user) {
+        console.log('Loading friend requests for user:', user.uid);
         const requestsQuery = query(
           collection(db, 'friendRequests'),
           where('to', '==', user.uid),
@@ -113,9 +118,11 @@ function Profile() {
         );
         
         const requestsSnapshot = await getDocs(requestsQuery);
+        console.log('Friend requests snapshot size:', requestsSnapshot.size);
         
         const requests = await Promise.all(requestsSnapshot.docs.map(async (doc) => {
           const requestData = doc.data();
+          console.log('Processing friend request:', requestData);
           const fromUserDocRef = doc(db, 'profiles', requestData.from);
           const fromUserDoc = await getDoc(fromUserDocRef);
           const fromUserData = fromUserDoc.data();
@@ -130,15 +137,17 @@ function Profile() {
           };
         }));
         
-        console.log('Loaded friend requests:', requests);
+        console.log('Processed friend requests:', requests);
         setFriendRequests(requests);
+      } else {
+        console.log('No current user found');
       }
     } catch (error) {
       console.error('친구 요청 불러오기 실패:', error);
     }
   };
 
-  
+
   const handleFriendRequestAction = async (requestId, action) => {
     try {
       const user = auth.currentUser;

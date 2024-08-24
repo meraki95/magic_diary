@@ -7,6 +7,7 @@ import { Select, MenuItem } from '@mui/material';
 import '../styles/PostCard.css';
 
 
+
 function PostCard({ post, refreshPosts, currentUser }) {
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -73,11 +74,14 @@ function PostCard({ post, refreshPosts, currentUser }) {
 
   const handleFriendAction = async () => {
     if (!currentUser || !post) {
+      console.error('Current user or post is undefined:', { currentUser, post });
       alert('로그인이 필요하거나 게시물 정보가 없습니다.');
       return;
     }
+    console.log('Friend action initiated:', { currentUser: currentUser.uid, postUserId: post.userId, friendStatus });
 
-    try {
+
+     try {
       if (friendStatus === 'none') {
         const newFriendRequest = {
           from: currentUser.uid,
@@ -85,7 +89,9 @@ function PostCard({ post, refreshPosts, currentUser }) {
           status: 'pending',
           createdAt: new Date()
         };
-        await addDoc(collection(db, 'friendRequests'), newFriendRequest);
+        console.log('Creating new friend request:', newFriendRequest);
+        const docRef = await addDoc(collection(db, 'friendRequests'), newFriendRequest);
+        console.log('Friend request created with ID:', docRef.id);
         setFriendStatus('pending');
         alert('친구 요청을 보냈습니다.');
       } else if (friendStatus === 'friends') {
@@ -102,6 +108,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
       alert('친구 상태 업데이트에 실패했습니다.');
     }
   };
+
 
   const handleLike = async () => {
     if (!currentUser || !post) {
