@@ -1,47 +1,36 @@
 .navbar {
   position: fixed;
   top: 0;
-  left: 0;
+  right: -250px;
   width: 250px;
   height: 100vh;
   background-color: #ffffff;
-  border-right: 1px solid #dbdbdb;
-  transform: translateX(-100%); /* 처음에 화면 밖에 숨겨둡니다 */
-  transition: transform 0.3s ease;
+  border-left: 1px solid #dbdbdb;
+  transition: right 0.3s ease;
   z-index: 1001;
 }
 
 .navbar.visible {
-  transform: translateX(0); /* 보일 때 화면 안으로 슬라이드합니다 */
+  right: 0;
 }
 
-.sidebar-toggle {
+.gear-icon {
   position: fixed;
   top: 20px;
-  left: 10px;
+  right: 20px;
   width: 30px;
   height: 30px;
-  background-color: #6C63FF;
-  border-radius: 0 5px 5px 0;
   cursor: pointer;
   z-index: 1002;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: left 0.3s ease;
 }
 
-.navbar.visible + .sidebar-toggle {
-  left: 250px;
-}
-
-.sidebar-toggle span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  background-color: white;
-  margin: 2px 0;
+.gear-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #6C63FF;
 }
 
 .nav-link {
@@ -74,18 +63,10 @@ li {
 @media (max-width: 768px) {
   .navbar {
     width: 100%;
-    transform: translateX(-100%);
+    right: -100%;
   }
 
   .navbar.visible {
-    transform: translateX(0);
-  }
-
-  .sidebar-toggle {
-    left: 0;
-  }
-
-  .navbar.visible + .sidebar-toggle {
-    left: calc(100% - 30px);
+    right: 0;
   }
 }
