@@ -103,10 +103,37 @@
   background: #4a90e2;
   color: #FFFFFF;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+.friend-request-count {
+  background-color: #ff4d4d;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 14px;
+  font-weight: bold;
 }
-
+.delete-friend-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+.delete-friend-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
 .friend-requests-btn svg {
   margin-right: 10px;
 }

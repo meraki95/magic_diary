@@ -4,7 +4,6 @@ import { signOut } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
-import { UserPlus } from 'lucide-react';
 import '../styles/Profile.css';
 import Chat from './Chat';
 
@@ -153,7 +152,6 @@ function Profile() {
     }
   };
 
-
   const handleFriendRequestAction = async (requestId, action) => {
     try {
       const user = auth.currentUser;
@@ -221,6 +219,36 @@ function Profile() {
     setSelectedFriend(friend);
   };
 
+  const handleDeleteFriend = async (friendId) => {
+    const confirmDelete = window.confirm("정말로 이 친구를 삭제하시겠습니까?");
+    if (confirmDelete) {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = doc(db, 'profiles', user.uid);
+          const friendRef = doc(db, 'profiles', friendId);
+
+          // 현재 사용자의 친구 목록에서 삭제
+          await updateDoc(userRef, {
+            friends: arrayRemove(friendId)
+          });
+
+          // 친구의 친구 목록에서 현재 사용자 삭제
+          await updateDoc(friendRef, {
+            friends: arrayRemove(user.uid)
+          });
+
+          // 로컬 상태 업데이트
+          setFriends(friends.filter(friend => friend.id !== friendId));
+          alert("친구가 성공적으로 삭제되었습니다.");
+        }
+      } catch (error) {
+        console.error("친구 삭제 중 오류 발생:", error);
+        alert("친구 삭제 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
   if (isLoading) {
     return <div>로딩 중...</div>;
   }
@@ -241,8 +269,8 @@ function Profile() {
       <div className="profile-content">
         <button onClick={() => setShowFriends(!showFriends)} className="friends-list-btn">친구 목록</button>
         <button onClick={() => setShowFriendRequests(!showFriendRequests)} className="friend-requests-btn">
-          친구 요청 <UserPlus />
-          {friendRequests.length > 0 && <span className="request-count">{friendRequests.length}</span>}
+          친구 요청
+          {friendRequests.length > 0 && <span className="friend-request-count">{friendRequests.length}</span>}
         </button>
         <button onClick={handleLogout} className="logout-btn">로그아웃</button>
       </div>
@@ -264,6 +292,9 @@ function Profile() {
               </button>
               <button onClick={() => startChat(friend)} className="chat-btn">
                 채팅하기
+              </button>
+              <button onClick={() => handleDeleteFriend(friend.id)} className="delete-friend-btn">
+                친구 삭제
               </button>
             </div>
           ))}
