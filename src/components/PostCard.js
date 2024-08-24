@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, updateDoc, doc, arrayUnion, arrayRemove, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
-import { Heart, MessageCircle, Share, ArrowUp, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { getFirestore, updateDoc, doc, addDoc, collection, arrayUnion, arrayRemove, getDoc, setDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
+import { Heart, MessageCircle, Share, ArrowUp, Trash2, ChevronDown, ChevronUp, UserPlus, UserMinus, UserCheck } from 'lucide-react';
 import { Select, MenuItem } from '@mui/material';
 import '../styles/PostCard.css';
-
 
 function PostCard({ post, refreshPosts, currentUser }) {
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
-  const [isFriend, setIsFriend] = useState(false);
+  const [friendStatus, setFriendStatus] = useState('none'); // 'none', 'pending', 'friends'
   const [isLoading, setIsLoading] = useState(true);
   const [showFriendAction, setShowFriendAction] = useState(false);
   const [visibility, setVisibility] = useState(post.visibility);
@@ -48,12 +47,29 @@ function PostCard({ post, refreshPosts, currentUser }) {
       const profileDocSnap = await getDoc(profileDocRef);
       if (profileDocSnap.exists()) {
         const profileData = profileDocSnap.data();
-        setIsFriend(profileData.friends?.includes(post.userId) || false);
+        if (profileData.friends?.includes(post.userId)) {
+          setFriendStatus('friends');
+          return;
+        }
+      }
+
+      const requestQuery = query(
+        collection(db, 'friendRequests'),
+        where('from', '==', currentUser.uid),
+        where('to', '==', post.userId),
+        where('status', '==', 'pending')
+      );
+      const requestSnapshot = await getDocs(requestQuery);
+      if (!requestSnapshot.empty) {
+        setFriendStatus('pending');
+      } else {
+        setFriendStatus('none');
       }
     } catch (error) {
       console.error('Error checking friend status:', error);
     }
   };
+
   const handleFriendAction = async () => {
     if (!currentUser || !post) {
       alert('로그인이 필요하거나 게시물 정보가 없습니다.');
@@ -61,23 +77,25 @@ function PostCard({ post, refreshPosts, currentUser }) {
     }
 
     try {
-      const profileDocRef = doc(db, 'profiles', currentUser.uid);
-      const profileDocSnap = await getDoc(profileDocRef);
-
-      if (!profileDocSnap.exists()) {
-        await setDoc(profileDocRef, { friends: [] });
-      }
-
-      if (isFriend) {
+      if (friendStatus === 'none') {
+        // 친구 요청 보내기
+        await addDoc(collection(db, 'friendRequests'), {
+          from: currentUser.uid,
+          to: post.userId,
+          status: 'pending',
+          createdAt: new Date()
+        });
+        setFriendStatus('pending');
+        alert('친구 요청을 보냈습니다.');
+      } else if (friendStatus === 'friends') {
+        // 친구 삭제
+        const profileDocRef = doc(db, 'profiles', currentUser.uid);
         await updateDoc(profileDocRef, {
           friends: arrayRemove(post.userId)
         });
-      } else {
-        await updateDoc(profileDocRef, {
-          friends: arrayUnion(post.userId)
-        });
+        setFriendStatus('none');
+        alert('친구 목록에서 삭제되었습니다.');
       }
-      setIsFriend(!isFriend);
       setShowFriendAction(false);
     } catch (error) {
       console.error('Error updating friend status:', error);
@@ -85,7 +103,6 @@ function PostCard({ post, refreshPosts, currentUser }) {
     }
   };
 
-  
   const handleLike = async () => {
     if (!currentUser || !post) {
       alert('로그인이 필요하거나 게시물 정보가 없습니다.');
@@ -207,16 +224,16 @@ function PostCard({ post, refreshPosts, currentUser }) {
         <img src={post.userImage || '/default-avatar.png'} alt={post.username} className="user-avatar" />
         <span className="username" onClick={() => setShowFriendAction(!showFriendAction)}>{post.username || '익명'}</span>
         {showFriendAction && currentUser && currentUser.uid !== post.userId && (
-          <>
-           <button onClick={handleFriendAction} className="friend-action-button">
-              {isFriend ? '친구 삭제' : '친구 추가'}
-            </button>
-            {isFriend && (
-              <button onClick={() => navigate(`/user/${post.userId}`)} className="view-posts-button">
-                게시물 보기
-              </button>
-            )}
-          </>
+          <button onClick={handleFriendAction} className="friend-action-button">
+            {friendStatus === 'none' && <><UserPlus size={18} /> 친구 추가</>}
+            {friendStatus === 'pending' && <><UserCheck size={18} /> 요청 중</>}
+            {friendStatus === 'friends' && <><UserMinus size={18} /> 친구 삭제</>}
+          </button>
+        )}
+        {friendStatus === 'friends' && (
+          <button onClick={() => navigate(`/user/${post.userId}`)} className="view-posts-button">
+            게시물 보기
+          </button>
         )}
         {currentUser && currentUser.uid === post.userId && (
           <>
@@ -228,7 +245,6 @@ function PostCard({ post, refreshPosts, currentUser }) {
               <MenuItem value="public">전체 공개</MenuItem>
               <MenuItem value="friends">친구 공개</MenuItem>
             </Select>
-            {/* 삭제 버튼 추가 */}
             <button className="delete-button" onClick={handleDelete}>
               <Trash2 size={18} />
               삭제
@@ -254,20 +270,19 @@ function PostCard({ post, refreshPosts, currentUser }) {
         <span className="username">{post.username || '익명'}</span> {post.content || '내용 없음'}
       </div>
       {post.diaryContent && (
-            <div className="diary-section">
-            <button 
-              className="diary-toggle"
-              onClick={() => setShowDiaryContent(!showDiaryContent)}
-            >
-              {showDiaryContent ? <ChevronUp size={18} color="black" /> : <ChevronDown size={18} color="black" />}
-            </button>
-            {showDiaryContent && (
-        
-        <div className="post-diary-content">
-          <strong>일기 내용:</strong> {post.diaryContent}
+        <div className="diary-section">
+          <button 
+            className="diary-toggle"
+            onClick={() => setShowDiaryContent(!showDiaryContent)}
+          >
+            {showDiaryContent ? <ChevronUp size={18} color="black" /> : <ChevronDown size={18} color="black" />}
+          </button>
+          {showDiaryContent && (
+            <div className="post-diary-content">
+              <strong>일기 내용:</strong> {post.diaryContent}
+            </div>
+          )}
         </div>
-      )}
-      </div>
       )}
       {showComments && (
         <div className="comments-section">
