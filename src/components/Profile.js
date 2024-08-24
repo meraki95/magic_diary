@@ -192,11 +192,10 @@ function Profile() {
     <div className="profile-container">
       <div className="profile-header">
         <div className="profile-image-container">
-          <img src={profileData.photoURL || '/default-avatar.png'} alt="프로필 사진" className="profile-image" />
+        <img src={profileData.photoURL || '/default-avatar.png'} alt="프로필 사진" className="profile-image" />
           {friendRequests.length > 0 && (
             <div className="friend-request-notification">
-              <UserPlus />
-              <span className="friend-request-count">{friendRequests.length}</span>
+              {friendRequests.length}
             </div>
           )}
         </div>
