@@ -119,7 +119,8 @@ function Profile() {
         for (const doc of requestsSnapshot.docs) {
           const requestData = doc.data();
           console.log("Request data:", requestData);
-          const fromUserDoc = await getDoc(doc.ref.firestore.doc(`profiles/${requestData.from}`));
+          const fromUserDocRef = doc(db, 'profiles', requestData.from); // 수정된 부분
+          const fromUserDoc = await getDoc(fromUserDocRef);
           const fromUserData = fromUserDoc.data();
           requests.push({
             id: doc.id,
