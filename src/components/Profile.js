@@ -1,45 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, updateDoc, limit, orderBy } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
 import '../styles/Profile.css';
-import Chat from './Chat'; // 새로 만든 Chat 컴포넌트
+import Chat from './Chat';
 
 function Profile() {
-  const [profileData, setProfileData] = useState({ email: '', photoURL: '', displayName: '' });
+  const [profileData, setProfileData] = useState({ email: '', photoURL: '', displayName: '', friends: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [friends, setFriends] = useState([]);
   const [showFriends, setShowFriends] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedFriend, setSelectedFriend] = useState(null); // 추가된 상태
+  const [selectedFriend, setSelectedFriend] = useState(null);
   const navigate = useNavigate();
   const db = getFirestore();
   const storage = getStorage();
 
-
-
-
-  const startChat = (friend) => {
-    setSelectedFriend(friend);
-  };
-
-  
   useEffect(() => {
     loadProfileData();
-    loadFriends();
   }, []);
 
   const loadProfileData = async () => {
     try {
       const user = auth.currentUser;
       if (user) {
-        let email = user.email || '';
-        let photoURL = user.photoURL || '';
-        let displayName = user.displayName || '';
+        const profileDocRef = doc(db, 'profiles', user.uid);
+        const profileDocSnap = await getDoc(profileDocRef);
 
-        setProfileData({ email, photoURL, displayName });
+        if (profileDocSnap.exists()) {
+          const data = profileDocSnap.data();
+          setProfileData({
+            email: user.email || '',
+            photoURL: data.photoURL || '',
+            displayName: data.displayName || '',
+            friends: data.friends || []
+          });
+          await loadFriends(data.friends || []);
+        } else {
+          // 프로필이 없으면 새로 생성
+          const newProfileData = {
+            email: user.email || '',
+            photoURL: user.photoURL || '',
+            displayName: user.displayName || '',
+            friends: []
+          };
+          await setDoc(profileDocRef, newProfileData);
+          setProfileData(newProfileData);
+        }
       }
     } catch (error) {
       console.error('프로필 정보 불러오기 실패:', error);
@@ -48,44 +57,24 @@ function Profile() {
     }
   };
 
-  const loadFriends = async () => {
+  const loadFriends = async (friendIds) => {
     try {
-      const user = auth.currentUser;
-      if (user) {
-        const userDocRef = doc(db, 'users', user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-  
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          const friendIds = userData.friends || [];
-          
-          const friendsData = await Promise.all(friendIds.map(async (friendId) => {
-            const postsQuery = query(
-              collection(db, 'posts'),
-              where('userId', '==', friendId),
-              orderBy('createdAt', 'desc'),
-              limit(1)
-            );
-            const postSnapshot = await getDocs(postsQuery);
-            let friendName = '익명';
-            let friendPhotoURL = 'https://via.placeholder.com/50';
-            
-            if (!postSnapshot.empty) {
-              const postData = postSnapshot.docs[0].data();
-              friendName = postData.username || '익명';
-              friendPhotoURL = postData.userImage || 'https://via.placeholder.com/50';
-            }
-            
-            return { 
-              id: friendId, 
-              name: friendName,
-              photoURL: friendPhotoURL
-            };
-          }));
-  
-          setFriends(friendsData.filter(friend => friend !== null));
+      const friendsData = await Promise.all(friendIds.map(async (friendId) => {
+        const friendProfileDocRef = doc(db, 'profiles', friendId);
+        const friendProfileDocSnap = await getDoc(friendProfileDocRef);
+        
+        if (friendProfileDocSnap.exists()) {
+          const data = friendProfileDocSnap.data();
+          return {
+            id: friendId,
+            name: data.displayName || '익명',
+            photoURL: data.photoURL || 'https://via.placeholder.com/50'
+          };
         }
-      }
+        return null;
+      }));
+
+      setFriends(friendsData.filter(friend => friend !== null));
     } catch (error) {
       console.error('친구 목록 불러오기 실패:', error);
     }
@@ -114,7 +103,8 @@ function Profile() {
       await uploadBytes(storageRef, selectedFile);
       const downloadURL = await getDownloadURL(storageRef);
 
-      await updateDoc(doc(db, 'users', user.uid), {
+      const profileDocRef = doc(db, 'profiles', user.uid);
+      await updateDoc(profileDocRef, {
         photoURL: downloadURL
       });
 
@@ -124,6 +114,10 @@ function Profile() {
       console.error('파일 업로드 오류:', error);
       alert('파일 업로드에 실패했습니다.');
     }
+  };
+
+  const startChat = (friend) => {
+    setSelectedFriend(friend);
   };
 
   if (isLoading) {
@@ -167,7 +161,6 @@ function Profile() {
           ))}
         </div>
       )}
-
       {selectedFriend && (
         <Chat friend={selectedFriend} onClose={() => setSelectedFriend(null)} />
       )}

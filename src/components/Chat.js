@@ -1,23 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import { auth } from '../firebaseConfig';
 import '../styles/Chat.css';
+
+// chatId를 생성하는 전역 함수
+const createChatId = (uid1, uid2) => {
+  return [uid1, uid2].sort().join('_');
+};
 
 function Chat({ friend, onClose }) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
   const db = getFirestore();
 
-  // chatId를 생성하는 함수
-  const createChatId = (uid1, uid2) => {
-    return [uid1, uid2].sort().join('_');
-  };
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const profileDocRef = doc(db, 'profiles', user.uid);
+        const profileDocSnap = await getDoc(profileDocRef);
+        if (profileDocSnap.exists()) {
+          setCurrentUserProfile(profileDocSnap.data());
+        }
+      }
+    };
+
+    loadUserProfile();
+  }, [db]);
 
   useEffect(() => {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user || !currentUserProfile) return;
 
     const chatId = createChatId(user.uid, friend.id);
+    console.log("Current chatId:", chatId); // 디버깅용 로그
+
     const messagesRef = collection(db, 'messages');
     const q = query(
       messagesRef,
@@ -36,24 +54,25 @@ function Chat({ friend, onClose }) {
     });
 
     return () => unsubscribe();
-  }, [friend.id]);
+  }, [friend.id, db, currentUserProfile]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !currentUserProfile) return;
 
     const user = auth.currentUser;
     if (!user) return;
 
     const chatId = createChatId(user.uid, friend.id);
+    console.log("Sending message with chatId:", chatId); // 디버깅용 로그
 
     try {
       await addDoc(collection(db, 'messages'), {
         chatId,
-        text: newMessage,
+        text: newMessage.trim(),
         createdAt: new Date(),
         senderId: user.uid,
-        senderName: user.displayName || '익명'
+        senderName: currentUserProfile.displayName || '익명'
       });
       setNewMessage('');
     } catch (error) {

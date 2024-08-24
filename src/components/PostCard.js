@@ -44,17 +44,16 @@ function PostCard({ post, refreshPosts, currentUser }) {
     if (!currentUser || !post || currentUser.uid === post.userId) return;
 
     try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        setIsFriend(userData.friends?.includes(post.userId) || false);
+      const profileDocRef = doc(db, 'profiles', currentUser.uid);
+      const profileDocSnap = await getDoc(profileDocRef);
+      if (profileDocSnap.exists()) {
+        const profileData = profileDocSnap.data();
+        setIsFriend(profileData.friends?.includes(post.userId) || false);
       }
     } catch (error) {
       console.error('Error checking friend status:', error);
     }
   };
-
   const handleFriendAction = async () => {
     if (!currentUser || !post) {
       alert('로그인이 필요하거나 게시물 정보가 없습니다.');
@@ -62,19 +61,19 @@ function PostCard({ post, refreshPosts, currentUser }) {
     }
 
     try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
+      const profileDocRef = doc(db, 'profiles', currentUser.uid);
+      const profileDocSnap = await getDoc(profileDocRef);
 
-      if (!userDocSnap.exists()) {
-        await setDoc(userDocRef, { friends: [] });
+      if (!profileDocSnap.exists()) {
+        await setDoc(profileDocRef, { friends: [] });
       }
 
       if (isFriend) {
-        await updateDoc(userDocRef, {
+        await updateDoc(profileDocRef, {
           friends: arrayRemove(post.userId)
         });
       } else {
-        await updateDoc(userDocRef, {
+        await updateDoc(profileDocRef, {
           friends: arrayUnion(post.userId)
         });
       }
@@ -86,6 +85,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
     }
   };
 
+  
   const handleLike = async () => {
     if (!currentUser || !post) {
       alert('로그인이 필요하거나 게시물 정보가 없습니다.');
@@ -208,7 +208,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
         <span className="username" onClick={() => setShowFriendAction(!showFriendAction)}>{post.username || '익명'}</span>
         {showFriendAction && currentUser && currentUser.uid !== post.userId && (
           <>
-            <button onClick={handleFriendAction} className="friend-action-button">
+           <button onClick={handleFriendAction} className="friend-action-button">
               {isFriend ? '친구 삭제' : '친구 추가'}
             </button>
             {isFriend && (
