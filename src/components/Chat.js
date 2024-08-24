@@ -8,11 +8,16 @@ function Chat({ friend, onClose }) {
   const [newMessage, setNewMessage] = useState('');
   const db = getFirestore();
 
+  // chatId를 생성하는 함수
+  const createChatId = (uid1, uid2) => {
+    return [uid1, uid2].sort().join('_');
+  };
+
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const chatId = [user.uid, friend.id].sort().join('_');
+    const chatId = createChatId(user.uid, friend.id);
     const messagesRef = collection(db, 'messages');
     const q = query(
       messagesRef,
@@ -26,10 +31,12 @@ function Chat({ friend, onClose }) {
         ...doc.data()
       }));
       setMessages(fetchedMessages);
+    }, (error) => {
+      console.error("실시간 메시지 로딩 오류:", error);
     });
 
     return () => unsubscribe();
-  }, [friend.id, db]);
+  }, [friend.id]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -38,7 +45,7 @@ function Chat({ friend, onClose }) {
     const user = auth.currentUser;
     if (!user) return;
 
-    const chatId = [user.uid, friend.id].sort().join('_');
+    const chatId = createChatId(user.uid, friend.id);
 
     try {
       await addDoc(collection(db, 'messages'), {
