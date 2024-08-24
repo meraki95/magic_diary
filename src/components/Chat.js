@@ -76,7 +76,7 @@ function Chat({ friend, onClose }) {
       });
       setNewMessage('');
     } catch (error) {
-      console.error('메시지 전송 오류:', error);
+      console.error('메시지 전송 오류입니다.:', error);
     }
   };
 
@@ -103,7 +103,7 @@ function Chat({ friend, onClose }) {
           className="message-input"
         />
         <button type="submit" className="send-btn">전송</button>
-      </form>
+      </form> 
     </div>
   );
 }
