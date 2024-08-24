@@ -63,7 +63,8 @@ function Profile() {
           newUnreadMessages[message.senderId]++;
         });
         setUnreadMessages(newUnreadMessages);
-        setTotalUnreadCount(Object.values(newUnreadMessages).reduce((a, b) => a + b, 0) + friendRequests.length);
+        const totalUnread = Object.values(newUnreadMessages).reduce((a, b) => a + b, 0);
+        setTotalUnreadCount(totalUnread + friendRequests.length);
       });
 
       return () => {
@@ -295,7 +296,7 @@ function Profile() {
         <button onClick={() => setShowFriends(!showFriends)} className="friends-list-btn">친구 목록</button>
         <button onClick={() => setShowFriendRequests(!showFriendRequests)} className="friend-requests-btn">
           친구 요청
-          {friendRequests.length > 0 && <span className="friend-request-count">{friendRequests.length}</span>}
+          {friendRequests.length > 0 && <span className="notification-badge">{friendRequests.length}</span>}
         </button>
         <button onClick={handleLogout} className="logout-btn">로그 아웃</button>
       </div>
@@ -317,7 +318,7 @@ function Profile() {
               </button>
               <button onClick={() => startChat(friend)} className="chat-btn">
                 채팅하기
-                {unreadMessages[friend.id] > 0 && <span className="unread-count">{unreadMessages[friend.id]}</span>}
+                {unreadMessages[friend.id] > 0 && <span className="notification-badge">{unreadMessages[friend.id]}</span>}
               </button>
               <button onClick={() => handleDeleteFriend(friend.id)} className="delete-friend-btn">
                 친구 삭제
