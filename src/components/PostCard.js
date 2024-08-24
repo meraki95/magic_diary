@@ -6,6 +6,7 @@ import { Heart, MessageCircle, Share, ArrowUp, Trash2, ChevronDown, ChevronUp, U
 import { Select, MenuItem } from '@mui/material';
 import '../styles/PostCard.css';
 
+
 function PostCard({ post, refreshPosts, currentUser }) {
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -78,12 +79,13 @@ function PostCard({ post, refreshPosts, currentUser }) {
 
     try {
       if (friendStatus === 'none') {
-        await addDoc(collection(db, 'friendRequests'), {
+        const newFriendRequest = {
           from: currentUser.uid,
           to: post.userId,
           status: 'pending',
           createdAt: new Date()
-        });
+        };
+        await addDoc(collection(db, 'friendRequests'), newFriendRequest);
         setFriendStatus('pending');
         alert('친구 요청을 보냈습니다.');
       } else if (friendStatus === 'friends') {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, deleteDoc,onSnapshot  } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
 import { UserPlus } from 'lucide-react';
@@ -28,22 +28,22 @@ function Profile() {
     };
     fetchData();
 
-  const user = auth.currentUser;
-  if (user) {
-    const requestsQuery = query(
-      collection(db, 'friendRequests'),
-      where('to', '==', user.uid),
-      where('status', '==', 'pending')
-    );
+    const user = auth.currentUser;
+    if (user) {
+      const requestsQuery = query(
+        collection(db, 'friendRequests'),
+        where('to', '==', user.uid),
+        where('status', '==', 'pending')
+      );
 
-    const unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
-      console.log("Friend requests updated");
-      loadFriendRequests();
-    });
+      const unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
+        console.log("Friend requests updated");
+        loadFriendRequests();
+      });
 
-    return () => unsubscribe();
-  }
-}, []);
+      return () => unsubscribe();
+    }
+  }, []);
 
   const loadProfileData = async () => {
     try {
@@ -105,24 +105,21 @@ function Profile() {
   const loadFriendRequests = async () => {
     try {
       const user = auth.currentUser;
-      console.log("Current user:", user);
       if (user) {
         const requestsQuery = query(
           collection(db, 'friendRequests'),
           where('to', '==', user.uid),
           where('status', '==', 'pending')
         );
-        const requestsSnapshot = await getDocs(requestsQuery);
-        console.log("Friend requests snapshot:", requestsSnapshot);
         
-        const requests = [];
-        for (const doc of requestsSnapshot.docs) {
+        const requestsSnapshot = await getDocs(requestsQuery);
+        
+        const requests = await Promise.all(requestsSnapshot.docs.map(async (doc) => {
           const requestData = doc.data();
-          console.log("Request data:", requestData);
-          const fromUserDocRef = doc(db, 'profiles', requestData.from); // 수정된 부분
+          const fromUserDocRef = doc(db, 'profiles', requestData.from);
           const fromUserDoc = await getDoc(fromUserDocRef);
           const fromUserData = fromUserDoc.data();
-          requests.push({
+          return {
             id: doc.id,
             from: requestData.from,
             to: requestData.to,
@@ -130,8 +127,8 @@ function Profile() {
             fromPhotoURL: fromUserData?.photoURL || 'https://via.placeholder.com/50',
             status: requestData.status,
             createdAt: requestData.createdAt?.toDate() || new Date()
-          });
-        }
+          };
+        }));
         
         console.log('Loaded friend requests:', requests);
         setFriendRequests(requests);
@@ -140,6 +137,8 @@ function Profile() {
       console.error('친구 요청 불러오기 실패:', error);
     }
   };
+
+  
   const handleFriendRequestAction = async (requestId, action) => {
     try {
       const user = auth.currentUser;
