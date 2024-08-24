@@ -111,8 +111,7 @@ function Profile() {
     }
   };
 
-
- const handleFriendRequestAction = async (requestId, action) => {
+  const handleFriendRequestAction = async (requestId, action) => {
     try {
       const user = auth.currentUser;
       const requestRef = doc(db, 'friendRequests', requestId);
@@ -138,7 +137,6 @@ function Profile() {
       alert('친구 요청 처리에 실패했습니다.');
     }
   };
-
 
   const handleLogout = async () => {
     try {
@@ -187,30 +185,18 @@ function Profile() {
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <img src={profileData.photoURL || '/default-avatar.png'} alt="프로필 사진" className="profile-image" />
-        <h2>{profileData.displayName || '이름 없음'}</h2>
-        {friendRequests.length > 0 && (
-          <div className="friend-request-notification">
-            <UserPlus />
-            <span className="friend-request-count">{friendRequests.length}</span>
-          </div>
-        )}
-      </div>
-      <div className="profile-image-container">
-        {profileData.photoURL ? (
-          <img src={profileData.photoURL} alt="프로필 사진" className="profile-image" />
-        ) : (
-          <>
-            <div className="profile-placeholder">프로필 사진이 없습니다.</div>
-            <div className="file-upload-container">
-              <input type="file" onChange={handleFileChange} />
-              <button onClick={handleFileUpload} className="upload-btn">이미지 업로드</button>
+        <div className="profile-image-container">
+          <img src={profileData.photoURL || '/default-avatar.png'} alt="프로필 사진" className="profile-image" />
+          {friendRequests.length > 0 && (
+            <div className="friend-request-notification">
+              <UserPlus />
+              <span className="friend-request-count">{friendRequests.length}</span>
             </div>
-          </>
-        )}
+          )}
+        </div>
+        <h2>{profileData.displayName || '이름 없음'}</h2>
       </div>
       <div className="profile-content">
-        <h2>{profileData.displayName || '이름 없음'}</h2>
         <button onClick={() => setShowFriends(!showFriends)} className="friends-list-btn">친구 목록</button>
         <button onClick={() => setShowFriendRequests(!showFriendRequests)} className="friend-requests-btn">
           친구 요청 <UserPlus />
@@ -218,6 +204,12 @@ function Profile() {
         </button>
         <button onClick={handleLogout} className="logout-btn">로그아웃</button>
       </div>
+      {!profileData.photoURL && (
+        <div className="file-upload-container">
+          <input type="file" onChange={handleFileChange} />
+          <button onClick={handleFileUpload} className="upload-btn">이미지 업로드</button>
+        </div>
+      )}
       {showFriends && (
         <div className="friends-list">
           <h3>친구 목록</h3>
@@ -230,23 +222,6 @@ function Profile() {
               </button>
               <button onClick={() => startChat(friend)} className="chat-btn">
                 채팅하기
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-         {friendRequests.length > 0 && (
-        <div className="friend-requests-list">
-          <h3>친구 요청</h3>
-          {friendRequests.map((request) => (
-            <div key={request.id} className="friend-request-item">
-              <img src={request.fromPhotoURL} alt={request.fromName} className="friend-avatar" />
-              <span>{request.fromName}</span>
-              <button onClick={() => handleFriendRequestAction(request.id, 'accept')} className="accept-btn">
-                수락
-              </button>
-              <button onClick={() => handleFriendRequestAction(request.id, 'reject')} className="reject-btn">
-                거절
               </button>
             </div>
           ))}
