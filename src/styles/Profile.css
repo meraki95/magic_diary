@@ -132,12 +132,10 @@
 }
 
 .friend-avatar {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  object-fit: cover;
-  margin-right: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-right: 10px;
 }
 
 .view-posts-btn {
@@ -151,6 +149,22 @@
   transition: all 0.3s ease;
 }
 
+.accept-btn, .reject-btn {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.accept-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+.reject-btn {
+  background-color: #f44336;
+  color: white;
+}
 .view-posts-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -178,10 +192,54 @@
   .friend-item {
     padding: 12px;
   }
+  .profile-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
 
   .friend-avatar {
     width: 40px;
     height: 40px;
+  }
+  .friend-request-notification {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .friend-request-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .friend-requests-list {
+    margin-top: 20px;
+  }
+
+  .friend-request-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
   }
 
   .view-posts-btn {
