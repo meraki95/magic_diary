@@ -213,7 +213,7 @@ function Profile() {
         <h2>{profileData.displayName || '이름 없음'}</h2>
         <button onClick={() => setShowFriends(!showFriends)} className="friends-list-btn">친구 목록</button>
         <button onClick={() => setShowFriendRequests(!showFriendRequests)} className="friend-requests-btn">
-          친구 요청 <Bell />
+          친구 요청 <UserPlus />
           {friendRequests.length > 0 && <span className="request-count">{friendRequests.length}</span>}
         </button>
         <button onClick={handleLogout} className="logout-btn">로그아웃</button>

@@ -148,6 +148,25 @@
   font-size: 14px;
   transition: all 0.3s ease;
 }
+.friend-requests-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.friend-requests-btn:hover {
+  background-color: #357abd;
+}
+.friend-requests-btn svg {
+  margin-right: 5px;
+}
+
 
 .accept-btn, .reject-btn {
   margin-left: 10px;
@@ -219,8 +238,8 @@
   }
   .friend-request-count {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: -8px;
+    right: -8px;
     background-color: #ff4d4d;
     color: white;
     border-radius: 50%;
