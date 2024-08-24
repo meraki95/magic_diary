@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
+import { Bell } from 'lucide-react';
 import '../styles/Profile.css';
 import Chat from './Chat';
 
@@ -14,12 +15,15 @@ function Profile() {
   const [showFriends, setShowFriends] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFriend, setSelectedFriend] = useState(null);
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [showFriendRequests, setShowFriendRequests] = useState(false);
   const navigate = useNavigate();
   const db = getFirestore();
   const storage = getStorage();
 
   useEffect(() => {
     loadProfileData();
+    loadFriendRequests();
   }, []);
 
   const loadProfileData = async () => {
@@ -39,7 +43,6 @@ function Profile() {
           });
           await loadFriends(data.friends || []);
         } else {
-          // 프로필이 없으면 새로 생성
           const newProfileData = {
             email: user.email || '',
             photoURL: user.photoURL || '',
@@ -77,6 +80,61 @@ function Profile() {
       setFriends(friendsData.filter(friend => friend !== null));
     } catch (error) {
       console.error('친구 목록 불러오기 실패:', error);
+    }
+  };
+
+  const loadFriendRequests = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const requestsQuery = query(
+          collection(db, 'friendRequests'),
+          where('to', '==', user.uid),
+          where('status', '==', 'pending')
+        );
+        const requestsSnapshot = await getDocs(requestsQuery);
+        const requests = await Promise.all(requestsSnapshot.docs.map(async (doc) => {
+          const requestData = doc.data();
+          const fromUserDoc = await getDoc(doc(db, 'profiles', requestData.from));
+          const fromUserData = fromUserDoc.data();
+          return {
+            id: doc.id,
+            from: requestData.from,
+            fromName: fromUserData?.displayName || '익명',
+            fromPhotoURL: fromUserData?.photoURL || 'https://via.placeholder.com/50'
+          };
+        }));
+        setFriendRequests(requests);
+      }
+    } catch (error) {
+      console.error('친구 요청 불러오기 실패:', error);
+    }
+  };
+
+  const handleFriendRequestAction = async (requestId, action) => {
+    try {
+      const user = auth.currentUser;
+      const requestRef = doc(db, 'friendRequests', requestId);
+      const requestDoc = await getDoc(requestRef);
+      const requestData = requestDoc.data();
+
+      if (action === 'accept') {
+        await updateDoc(doc(db, 'profiles', user.uid), {
+          friends: arrayUnion(requestData.from)
+        });
+        await updateDoc(doc(db, 'profiles', requestData.from), {
+          friends: arrayUnion(user.uid)
+        });
+        await deleteDoc(requestRef);
+        loadProfileData();
+      } else {
+        await deleteDoc(requestRef);
+      }
+
+      loadFriendRequests();
+    } catch (error) {
+      console.error('친구 요청 처리 실패:', error);
+      alert('친구 요청 처리에 실패했습니다.');
     }
   };
 
@@ -142,6 +200,10 @@ function Profile() {
       <div className="profile-content">
         <h2>{profileData.displayName || '이름 없음'}</h2>
         <button onClick={() => setShowFriends(!showFriends)} className="friends-list-btn">친구 목록</button>
+        <button onClick={() => setShowFriendRequests(!showFriendRequests)} className="friend-requests-btn">
+          친구 요청 <Bell />
+          {friendRequests.length > 0 && <span className="request-count">{friendRequests.length}</span>}
+        </button>
         <button onClick={handleLogout} className="logout-btn">로그아웃</button>
       </div>
       {showFriends && (
@@ -156,6 +218,23 @@ function Profile() {
               </button>
               <button onClick={() => startChat(friend)} className="chat-btn">
                 채팅하기
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {showFriendRequests && (
+        <div className="friend-requests-list">
+          <h3>친구 요청</h3>
+          {friendRequests.map((request) => (
+            <div key={request.id} className="friend-request-item">
+              <img src={request.fromPhotoURL} alt={request.fromName} className="friend-avatar" />
+              <span>{request.fromName}</span>
+              <button onClick={() => handleFriendRequestAction(request.id, 'accept')} className="accept-btn">
+                수락
+              </button>
+              <button onClick={() => handleFriendRequestAction(request.id, 'reject')} className="reject-btn">
+                거절
               </button>
             </div>
           ))}

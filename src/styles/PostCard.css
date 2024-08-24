@@ -175,8 +175,9 @@
   margin-left: 10px;
   transition: all 0.3s ease;
 }
+
 .diary-toggle {
-  background-color: transparent; /* 배경색 제거 */
+  background-color: transparent;
 }
 
 .comment-submit:hover {

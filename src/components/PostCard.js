@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, updateDoc, doc, addDoc, collection, arrayUnion, arrayRemove, getDoc, setDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
-import { Heart, MessageCircle, Share, ArrowUp, Trash2, ChevronDown, ChevronUp, UserPlus, UserMinus, UserCheck } from 'lucide-react';
+import { Heart, MessageCircle, Share, ArrowUp, Trash2, ChevronDown, ChevronUp, UserPlus, UserMinus, UserCheck, Globe, Users } from 'lucide-react';
 import { Select, MenuItem } from '@mui/material';
 import '../styles/PostCard.css';
 
@@ -10,7 +10,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
-  const [friendStatus, setFriendStatus] = useState('none'); // 'none', 'pending', 'friends'
+  const [friendStatus, setFriendStatus] = useState('none');
   const [isLoading, setIsLoading] = useState(true);
   const [showFriendAction, setShowFriendAction] = useState(false);
   const [visibility, setVisibility] = useState(post.visibility);
@@ -78,7 +78,6 @@ function PostCard({ post, refreshPosts, currentUser }) {
 
     try {
       if (friendStatus === 'none') {
-        // 친구 요청 보내기
         await addDoc(collection(db, 'friendRequests'), {
           from: currentUser.uid,
           to: post.userId,
@@ -88,7 +87,6 @@ function PostCard({ post, refreshPosts, currentUser }) {
         setFriendStatus('pending');
         alert('친구 요청을 보냈습니다.');
       } else if (friendStatus === 'friends') {
-        // 친구 삭제
         const profileDocRef = doc(db, 'profiles', currentUser.uid);
         await updateDoc(profileDocRef, {
           friends: arrayRemove(post.userId)
@@ -117,7 +115,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
 
       await updateDoc(postRef, { likes: newLikes });
       setLiked(!liked);
-      post.likes = newLikes; // 로컬 상태 업데이트
+      post.likes = newLikes;
     } catch (error) {
       console.error('Error updating like status:', error);
       alert('좋아요 상태 업데이트에 실패했습니다.');
@@ -141,7 +139,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
       ];
       await updateDoc(postRef, { comments: newComments });
       setNewComment('');
-      post.comments = newComments; // 로컬 상태 업데이트
+      post.comments = newComments;
     } catch (error) {
       console.error('Error adding comment:', error);
       alert('댓글 추가에 실패했습니다.');
@@ -161,7 +159,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
       const postRef = doc(db, 'posts', post.id);
       await deleteDoc(postRef);
       alert('게시물이 삭제되었습니다.');
-      refreshPosts(); // 삭제 후 게시물 목록을 새로고침합니다.
+      refreshPosts();
     } catch (error) {
       console.error('Error deleting post:', error);
       alert('게시물 삭제에 실패했습니다.');
@@ -203,7 +201,7 @@ function PostCard({ post, refreshPosts, currentUser }) {
     try {
       const postRef = doc(db, 'posts', post.id);
       await updateDoc(postRef, { visibility: newVisibility });
-      post.visibility = newVisibility; // 로컬 상태 업데이트
+      post.visibility = newVisibility;
     } catch (error) {
       console.error('Error updating post visibility:', error);
       alert('게시물 공개 설정 변경에 실패했습니다.');
@@ -242,8 +240,8 @@ function PostCard({ post, refreshPosts, currentUser }) {
               onChange={handleVisibilityChange}
               className="visibility-select"
             >
-              <MenuItem value="public">전체 공개</MenuItem>
-              <MenuItem value="friends">친구 공개</MenuItem>
+              <MenuItem value="public"><Globe size={18} /> 전체 공개</MenuItem>
+              <MenuItem value="friends"><Users size={18} /> 친구 공개</MenuItem>
             </Select>
             <button className="delete-button" onClick={handleDelete}>
               <Trash2 size={18} />
