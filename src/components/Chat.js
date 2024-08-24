@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth } from '../firebaseConfig';
 import '../styles/Chat.css';
 
@@ -49,6 +49,14 @@ function Chat({ friend, onClose }) {
         ...doc.data()
       }));
       setMessages(fetchedMessages);
+
+      // 메시지를 읽음으로 표시
+      querySnapshot.docs.forEach(async (doc) => {
+        const messageData = doc.data();
+        if (messageData.to === user.uid && !messageData.read) {
+          await updateDoc(doc.ref, { read: true });
+        }
+      });
     }, (error) => {
       console.error("실시간 메시지 로딩 오류:", error);
     });
@@ -72,7 +80,9 @@ function Chat({ friend, onClose }) {
         text: newMessage.trim(),
         createdAt: new Date(),
         senderId: user.uid,
-        senderName: currentUserProfile.displayName || '익명'
+        senderName: currentUserProfile.displayName || '익명',
+        to: friend.id,
+        read: false
       });
       setNewMessage('');
     } catch (error) {

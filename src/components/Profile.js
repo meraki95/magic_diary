@@ -16,6 +16,8 @@ function Profile() {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState({});
+  const [totalUnreadCount, setTotalUnreadCount] = useState(0);
   const navigate = useNavigate();
   const db = getFirestore();
   const storage = getStorage();
@@ -29,22 +31,45 @@ function Profile() {
 
     const user = auth.currentUser;
     if (user) {
-      console.log('Setting up friend requests listener for user:', user.uid);
+      console.log('친구 요청 리스너 설정 중, 사용자:', user.uid);
       const requestsQuery = query(
         collection(db, 'friendRequests'),
         where('to', '==', user.uid),
         where('status', '==', 'pending')
       );
 
-      const unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
-        console.log("Friend requests updated, snapshot size:", snapshot.size);
+      const unsubscribeRequests = onSnapshot(requestsQuery, (snapshot) => {
+        console.log("친구 요청 업데이트, 스냅샷 크기:", snapshot.size);
         snapshot.docChanges().forEach((change) => {
-          console.log("Change type:", change.type, "document:", change.doc.data());
+          console.log("변경 유형:", change.type, "문서:", change.doc.data());
         });
         loadFriendRequests();
       });
 
-      return () => unsubscribe();
+      // 읽지 않은 메시지 리스너 설정
+      const unreadMessagesQuery = query(
+        collection(db, 'messages'),
+        where('to', '==', user.uid),
+        where('read', '==', false)
+      );
+
+      const unsubscribeMessages = onSnapshot(unreadMessagesQuery, (snapshot) => {
+        const newUnreadMessages = {};
+        snapshot.docs.forEach(doc => {
+          const message = doc.data();
+          if (!newUnreadMessages[message.senderId]) {
+            newUnreadMessages[message.senderId] = 0;
+          }
+          newUnreadMessages[message.senderId]++;
+        });
+        setUnreadMessages(newUnreadMessages);
+        setTotalUnreadCount(Object.values(newUnreadMessages).reduce((a, b) => a + b, 0) + friendRequests.length);
+      });
+
+      return () => {
+        unsubscribeRequests();
+        unsubscribeMessages();
+      };
     }
   }, []);
 
@@ -109,7 +134,7 @@ function Profile() {
     try {
       const user = auth.currentUser;
       if (user) {
-        console.log('Loading friend requests for user:', user.uid);
+        console.log('친구 요청 불러오는 중, 사용자:', user.uid);
         const requestsQuery = query(
           collection(db, 'friendRequests'),
           where('to', '==', user.uid),
@@ -117,11 +142,11 @@ function Profile() {
         );
         
         const requestsSnapshot = await getDocs(requestsQuery);
-        console.log('Friend requests snapshot size:', requestsSnapshot.size);
+        console.log('친구 요청 스냅샷 크기:', requestsSnapshot.size);
         
         const requests = await Promise.all(requestsSnapshot.docs.map(async (docSnapshot) => {
           const requestData = docSnapshot.data();
-          console.log('Processing friend request:', requestData);
+          console.log('친구 요청 처리 중:', requestData);
           try {
             const fromUserDocRef = doc(db, 'profiles', requestData.from);
             const fromUserDoc = await getDoc(fromUserDocRef);
@@ -136,16 +161,16 @@ function Profile() {
               createdAt: requestData.createdAt?.toDate() || new Date()
             };
           } catch (error) {
-            console.error('Error processing friend request:', error);
+            console.error('친구 요청 처리 오류:', error);
             return null;
           }
         }));
         
         const validRequests = requests.filter(request => request !== null);
-        console.log('Processed friend requests:', validRequests);
+        console.log('처리된 친구 요청:', validRequests);
         setFriendRequests(validRequests);
       } else {
-        console.log('No current user found');
+        console.log('현재 사용자를 찾을 수 없습니다');
       }
     } catch (error) {
       console.error('친구 요청 불러오기 실패:', error);
@@ -257,10 +282,10 @@ function Profile() {
     <div className="profile-container">
       <div className="profile-header">
         <div className="profile-image-container">
-        <img src={profileData.photoURL || '/default-avatar.png'} alt="프로필 사진" className="profile-image" />
-          {friendRequests.length > 0 && (
-            <div className="friend-request-notification">
-              {friendRequests.length}
+          <img src={profileData.photoURL || '/default-avatar.png'} alt="프로필 사진" className="profile-image" />
+          {totalUnreadCount > 0 && (
+            <div className="notification-badge">
+              {totalUnreadCount}
             </div>
           )}
         </div>
@@ -292,6 +317,7 @@ function Profile() {
               </button>
               <button onClick={() => startChat(friend)} className="chat-btn">
                 채팅하기
+                {unreadMessages[friend.id] > 0 && <span className="unread-count">{unreadMessages[friend.id]}</span>}
               </button>
               <button onClick={() => handleDeleteFriend(friend.id)} className="delete-friend-btn">
                 친구 삭제
@@ -302,20 +328,20 @@ function Profile() {
       )}
       {showFriendRequests && (
        <div className="friend-requests-list">
-       <h3>친구 요청 ({friendRequests.length})</h3>
-       {friendRequests.map((request) => (
-         <div key={request.id} className="friend-request-item">
-           <img src={request.fromPhotoURL} alt={request.fromName} className="friend-avatar" />
-           <span>{request.fromName}</span>
-           <button onClick={() => handleFriendRequestAction(request.id, 'accept')} className="accept-btn">
-             수락
-           </button>
-           <button onClick={() => handleFriendRequestAction(request.id, 'reject')} className="reject-btn">
-             거절
-           </button>
-         </div>
-       ))}
-     </div>
+         <h3>친구 요청 ({friendRequests.length})</h3>
+         {friendRequests.map((request) => (
+           <div key={request.id} className="friend-request-item">
+             <img src={request.fromPhotoURL} alt={request.fromName} className="friend-avatar" />
+             <span>{request.fromName}</span>
+             <button onClick={() => handleFriendRequestAction(request.id, 'accept')} className="accept-btn">
+               수락
+             </button>
+             <button onClick={() => handleFriendRequestAction(request.id, 'reject')} className="reject-btn">
+               거절
+             </button>
+           </div>
+         ))}
+       </div>
       )}
       {selectedFriend && (
         <Chat friend={selectedFriend} onClose={() => setSelectedFriend(null)} />
