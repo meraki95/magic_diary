@@ -4,7 +4,7 @@ import { signOut } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebaseConfig';
-import { Bell } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import '../styles/Profile.css';
 import Chat from './Chat';
 
@@ -111,7 +111,8 @@ function Profile() {
     }
   };
 
-  const handleFriendRequestAction = async (requestId, action) => {
+
+ const handleFriendRequestAction = async (requestId, action) => {
     try {
       const user = auth.currentUser;
       const requestRef = doc(db, 'friendRequests', requestId);
@@ -137,6 +138,7 @@ function Profile() {
       alert('친구 요청 처리에 실패했습니다.');
     }
   };
+
 
   const handleLogout = async () => {
     try {
@@ -184,6 +186,16 @@ function Profile() {
 
   return (
     <div className="profile-container">
+      <div className="profile-header">
+        <img src={profileData.photoURL || '/default-avatar.png'} alt="프로필 사진" className="profile-image" />
+        <h2>{profileData.displayName || '이름 없음'}</h2>
+        {friendRequests.length > 0 && (
+          <div className="friend-request-notification">
+            <UserPlus />
+            <span className="friend-request-count">{friendRequests.length}</span>
+          </div>
+        )}
+      </div>
       <div className="profile-image-container">
         {profileData.photoURL ? (
           <img src={profileData.photoURL} alt="프로필 사진" className="profile-image" />
@@ -218,6 +230,23 @@ function Profile() {
               </button>
               <button onClick={() => startChat(friend)} className="chat-btn">
                 채팅하기
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+         {friendRequests.length > 0 && (
+        <div className="friend-requests-list">
+          <h3>친구 요청</h3>
+          {friendRequests.map((request) => (
+            <div key={request.id} className="friend-request-item">
+              <img src={request.fromPhotoURL} alt={request.fromName} className="friend-avatar" />
+              <span>{request.fromName}</span>
+              <button onClick={() => handleFriendRequestAction(request.id, 'accept')} className="accept-btn">
+                수락
+              </button>
+              <button onClick={() => handleFriendRequestAction(request.id, 'reject')} className="reject-btn">
+                거절
               </button>
             </div>
           ))}
