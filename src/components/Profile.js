@@ -120,25 +120,31 @@ function Profile() {
         const requestsSnapshot = await getDocs(requestsQuery);
         console.log('Friend requests snapshot size:', requestsSnapshot.size);
         
-        const requests = await Promise.all(requestsSnapshot.docs.map(async (doc) => {
-          const requestData = doc.data();
+        const requests = await Promise.all(requestsSnapshot.docs.map(async (docSnapshot) => {
+          const requestData = docSnapshot.data();
           console.log('Processing friend request:', requestData);
-          const fromUserDocRef = doc(db, 'profiles', requestData.from);
-          const fromUserDoc = await getDoc(fromUserDocRef);
-          const fromUserData = fromUserDoc.data();
-          return {
-            id: doc.id,
-            from: requestData.from,
-            to: requestData.to,
-            fromName: fromUserData?.displayName || '익명',
-            fromPhotoURL: fromUserData?.photoURL || 'https://via.placeholder.com/50',
-            status: requestData.status,
-            createdAt: requestData.createdAt?.toDate() || new Date()
-          };
+          try {
+            const fromUserDocRef = doc(db, 'profiles', requestData.from);
+            const fromUserDoc = await getDoc(fromUserDocRef);
+            const fromUserData = fromUserDoc.data() || {};
+            return {
+              id: docSnapshot.id,
+              from: requestData.from,
+              to: requestData.to,
+              fromName: fromUserData.displayName || '익명',
+              fromPhotoURL: fromUserData.photoURL || 'https://via.placeholder.com/50',
+              status: requestData.status,
+              createdAt: requestData.createdAt?.toDate() || new Date()
+            };
+          } catch (error) {
+            console.error('Error processing friend request:', error);
+            return null;
+          }
         }));
         
-        console.log('Processed friend requests:', requests);
-        setFriendRequests(requests);
+        const validRequests = requests.filter(request => request !== null);
+        console.log('Processed friend requests:', validRequests);
+        setFriendRequests(validRequests);
       } else {
         console.log('No current user found');
       }
